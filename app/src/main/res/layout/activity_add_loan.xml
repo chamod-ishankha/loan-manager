@@ -15,10 +15,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="30dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/adRoyalBlueBox"
+                android:id="@+id/alRoyalBlueBox"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:background="@color/royalBlue"
@@ -26,7 +27,7 @@
                 android:padding="15dp">
 
                 <TextView
-                    android:id="@+id/tvAdRoyalBlueBoxHead"
+                    android:id="@+id/tvAlRoyalBlueBoxHead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
@@ -38,7 +39,7 @@
                     android:textColor="@color/white" />
 
                 <TextView
-                    android:id="@+id/tvAdRoyalBlueBoxSub"
+                    android:id="@+id/tvAlRoyalBlueBoxSub"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/royalBlue"
@@ -61,7 +62,7 @@
                 android:padding="15dp">
 
                 <RelativeLayout
-                    android:id="@+id/rl_ico_email_box"
+                    android:id="@+id/al_ico_loan_type_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
@@ -69,194 +70,416 @@
                     android:orientation="horizontal"
                     android:padding="10dp">
 
-                    <!--                    <ImageView-->
-                    <!--                        android:id="@+id/log_email_ico"-->
-                    <!--                        android:layout_width="wrap_content"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_centerVertical="true"-->
-                    <!--                        android:layout_margin="5dp"-->
-                    <!--                        android:src="@drawable/outline_email_48" />-->
-
-                    <RelativeLayout
-                        android:id="@+id/rl_email_box"
+                    <TextView
+                        android:id="@+id/al_tv_loan_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true">
-                        <!--                        android:layout_toEndOf="@+id/log_email_ico"-->
+                        android:background="@drawable/tv_border_bottom"
+                        android:padding="6dp"
+                        android:text="Loan Type*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp" />
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/al_text_input_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_loan_type"
+                        android:hint="@string/select_lt_dd"
+                        app:boxStrokeWidth="0dp">
 
-                        <TextView
-                            android:id="@+id/tv_ad_loan_type"
+                        <AutoCompleteTextView
+                            android:id="@+id/al_atc_loan_type"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/tv_border_bottom"
+                            android:textSize="16sp"
+                            android:drawableEnd="@drawable/ic_dropdown_24"
+                            android:dropDownVerticalOffset="16dp"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:padding="6dp"
-                            android:text="Loan Type*"
-                            android:textColor="@color/formTextColor"
-                            android:textSize="16sp" />
+                            android:inputType="none"
+                            android:windowSoftInputMode="adjustResize"
+                            android:dropDownHeight="200dp"/>
 
-<!--                        <EditText-->
-<!--                            android:id="@+id/et_ad_loan_type"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_below="@+id/tv_ad_loan_type"-->
-<!--                            android:background="@color/white"-->
-<!--                            android:hint="Select your loan type"-->
-<!--                            android:inputType="textEmailAddress"-->
-<!--                            android:padding="6dp"-->
-<!--                            android:textSize="16sp" />-->
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <Spinner
-                            android:id="@+id/sp_ad_loan_type"
-                            android:layout_below="@+id/tv_ad_loan_type"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@color/transparent"
-                            android:padding="6dp"
-                            android:textSize="16sp"/>
-
-                    </RelativeLayout>
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/rl_ico_pwd_box"
+                    android:id="@+id/al_ico_loan_amount_box"
+                    android:layout_below="@+id/al_ico_loan_type_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rl_ico_email_box"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/rl_border"
                     android:orientation="horizontal"
                     android:padding="10dp">
 
-                    <ImageView
-                        android:id="@+id/log_pwd_ico"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/outline_lock_48" />
-
-                    <RelativeLayout
-                        android:id="@+id/rl_pwd_box"
+                    <TextView
+                        android:id="@+id/al_tv_loan_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/log_pwd_ico">
+                        android:padding="6dp"
+                        android:text="Loan Amount*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
 
-                        <TextView
-                            android:id="@+id/tv_log_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/tv_border_bottom"
-                            android:padding="6dp"
-                            android:text="Password*"
-                            android:textColor="@color/formTextColor"
-                            android:textSize="16sp" />
+                    <EditText
+                        android:id="@+id/al_et_loan_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_loan_amount"
+                        android:background="@color/white"
+                        android:hint="Enter loan amount"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
 
-                        <EditText
-                            android:id="@+id/et_log_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tv_log_password"
-                            android:layout_marginEnd="30dp"
-                            android:background="@color/white"
-                            android:hint="Enter password"
-                            android:inputType="textEmailAddress"
-                            android:padding="6dp"
-                            android:textSize="16sp" />
+                </RelativeLayout>
 
-                        <ImageView
-                            android:id="@+id/log_show_hide_pwd"
-                            android:layout_width="30dp"
-                            android:layout_height="32dp"
-                            android:layout_below="@+id/tv_log_password"
-                            android:layout_marginStart="-30dp"
-                            android:layout_marginTop="1dp"
-                            android:layout_toEndOf="@+id/et_log_password" />
+                <RelativeLayout
+                    android:id="@+id/al_ico_interest_rate_box"
+                    android:layout_below="@+id/al_ico_loan_amount_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
-                    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/al_tv_interest_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Interest Rate*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_interest_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_interest_rate"
+                        android:background="@color/white"
+                        android:hint="Enter interest rate (%)"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_terms_box"
+                    android:layout_below="@+id/al_ico_interest_rate_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_terms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Duration/Term*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_terms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_terms"
+                        android:background="@color/white"
+                        android:hint="Enter loan duration or term"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_start_date_box"
+                    android:layout_below="@+id/al_ico_terms_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_start_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Start Date*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_start_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_start_date"
+                        android:background="@color/white"
+                        android:hint="Select start date"
+                        android:inputType="date"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_due_date_box"
+                    android:layout_below="@+id/al_ico_start_date_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_due_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Due Date*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_due_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_due_date"
+                        android:background="@color/white"
+                        android:hint="Select due date"
+                        android:inputType="date"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_installment_amount_box"
+                    android:layout_below="@+id/al_ico_due_date_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_installment_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Installment Amount (if applicable)"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_installment_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_installment_amount"
+                        android:background="@color/white"
+                        android:hint="Enter installment amount"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_fop_box"
+                    android:layout_below="@+id/al_ico_installment_amount_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_fop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Frequency of Payments (if applicable)"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_fop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_fop"
+                        android:background="@color/white"
+                        android:hint="Select payment frequency"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_additional_fees_box"
+                    android:layout_below="@+id/al_ico_fop_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_additional_fees"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Additional Fees/Charges*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_additional_fees"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_additional_fees"
+                        android:background="@color/white"
+                        android:hint="Enter additional fees or charges"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_description_box"
+                    android:layout_below="@+id/al_ico_additional_fees_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Notes/Description"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_description"
+                        android:background="@color/white"
+                        android:hint="Enter notes or description (optional)"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_lender_info_box"
+                    android:layout_below="@+id/al_ico_description_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_lender_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Lender Information*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_lender_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_lender_info"
+                        android:background="@color/white"
+                        android:hint="Enter lender information"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/al_ico_contact_info_box"
+                    android:layout_below="@+id/al_ico_lender_info_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/al_tv_contact_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:text="Contact Information*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp"
+                        android:background="@drawable/tv_border_bottom"/>
+
+                    <EditText
+                        android:id="@+id/al_et_contact_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_tv_contact_info"
+                        android:background="@color/white"
+                        android:hint="Enter contact information"
+                        android:inputType="text"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
 
                 </RelativeLayout>
 
                 <Button
                     android:id="@+id/log_btn_login"
+                    android:layout_below="@+id/al_ico_contact_info_box"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rl_ico_pwd_box"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="40dp"
-                    android:backgroundTint="@color/royalBlue"
-                    android:text="Login" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/log_btn_login"
+                    android:layout_marginTop="30dp"
                     android:layout_marginBottom="30dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:textAlignment="center">
-
-                    <RelativeLayout
-                        android:id="@+id/log_reg_box"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tv_reg_box"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Do not have an account?"
-                            android:textAlignment="center"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/log_reg_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tv_reg_box"
-                            android:gravity="center_horizontal"
-                            android:text="@string/register_btn_text"
-                            android:textAlignment="center"
-                            android:textColor="@color/royalBlue"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/log_reset_box"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tv_reset_box"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:text="Forgot your password?"
-                            android:textAlignment="center"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/log_reset_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tv_reset_box"
-                            android:clickable="true"
-                            android:gravity="center_horizontal"
-                            android:text="@string/reset_btn_text"
-                            android:textAlignment="center"
-                            android:textColor="@color/royalBlue"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
+                    android:backgroundTint="@color/royalBlue"
+                    android:text="Open New Loan" />
 
                 <ProgressBar
                     android:id="@+id/log_progressBar"
