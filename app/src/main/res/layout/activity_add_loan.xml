@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main"
+    tools:context=".activities.AddLoanActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/adRoyalBlueBox"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="@color/royalBlue"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/tvAdRoyalBlueBoxHead"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/royalBlue"
+                    android:gravity="center"
+                    android:text="Get Started with Your Next Loan"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvAdRoyalBlueBoxSub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/royalBlue"
+                    android:gravity="center"
+                    android:text="Enter the details of your new loan to stay on top of your finances."
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="-50dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rl_border"
+                android:padding="15dp">
+
+                <RelativeLayout
+                    android:id="@+id/rl_ico_email_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <!--                    <ImageView-->
+                    <!--                        android:id="@+id/log_email_ico"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_centerVertical="true"-->
+                    <!--                        android:layout_margin="5dp"-->
+                    <!--                        android:src="@drawable/outline_email_48" />-->
+
+                    <RelativeLayout
+                        android:id="@+id/rl_email_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true">
+                        <!--                        android:layout_toEndOf="@+id/log_email_ico"-->
+
+
+                        <TextView
+                            android:id="@+id/tv_ad_loan_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/tv_border_bottom"
+                            android:padding="6dp"
+                            android:text="Loan Type*"
+                            android:textColor="@color/formTextColor"
+                            android:textSize="16sp" />
+
+<!--                        <EditText-->
+<!--                            android:id="@+id/et_ad_loan_type"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_below="@+id/tv_ad_loan_type"-->
+<!--                            android:background="@color/white"-->
+<!--                            android:hint="Select your loan type"-->
+<!--                            android:inputType="textEmailAddress"-->
+<!--                            android:padding="6dp"-->
+<!--                            android:textSize="16sp" />-->
+
+                        <Spinner
+                            android:id="@+id/sp_ad_loan_type"
+                            android:layout_below="@+id/tv_ad_loan_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            android:padding="6dp"
+                            android:textSize="16sp"/>
+
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_ico_pwd_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_ico_email_box"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rl_border"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/log_pwd_ico"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/outline_lock_48" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_pwd_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/log_pwd_ico">
+
+                        <TextView
+                            android:id="@+id/tv_log_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/tv_border_bottom"
+                            android:padding="6dp"
+                            android:text="Password*"
+                            android:textColor="@color/formTextColor"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/et_log_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_log_password"
+                            android:layout_marginEnd="30dp"
+                            android:background="@color/white"
+                            android:hint="Enter password"
+                            android:inputType="textEmailAddress"
+                            android:padding="6dp"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/log_show_hide_pwd"
+                            android:layout_width="30dp"
+                            android:layout_height="32dp"
+                            android:layout_below="@+id/tv_log_password"
+                            android:layout_marginStart="-30dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_toEndOf="@+id/et_log_password" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/log_btn_login"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_ico_pwd_box"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="40dp"
+                    android:backgroundTint="@color/royalBlue"
+                    android:text="Login" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/log_btn_login"
+                    android:layout_marginBottom="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:textAlignment="center">
+
+                    <RelativeLayout
+                        android:id="@+id/log_reg_box"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/tv_reg_box"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Do not have an account?"
+                            android:textAlignment="center"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/log_reg_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_reg_box"
+                            android:gravity="center_horizontal"
+                            android:text="@string/register_btn_text"
+                            android:textAlignment="center"
+                            android:textColor="@color/royalBlue"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/log_reset_box"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/tv_reset_box"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:text="Forgot your password?"
+                            android:textAlignment="center"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/log_reset_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_reset_box"
+                            android:clickable="true"
+                            android:gravity="center_horizontal"
+                            android:text="@string/reset_btn_text"
+                            android:textAlignment="center"
+                            android:textColor="@color/royalBlue"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/log_progressBar"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:elevation="10dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipeContainer">
+
+<ScrollView
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.DeleteAccountActivity"
+    android:background="@color/main">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="30dp">
+
+        <LinearLayout
+            android:id="@+id/daRoyalBlueBox"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@color/royalBlue"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/tvRoyalBlueBoxHead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/royalBlue"
+                android:text="Delete Your Profile"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:gravity="center"
+                android:layout_marginTop="30dp"/>
+
+            <TextView
+                android:id="@+id/tvRoyalBlueBoxSub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/royalBlue"
+                android:text="You can delete your profile and all related data, day after authenticating your profile by entering your current password."
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/da_1_rl_box"
+            android:layout_below="@+id/daRoyalBlueBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_marginTop="-40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rl_border"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/da_ico_pwd_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rl_border"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/da_pwd_ico"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/outline_lock_48" />
+
+                <RelativeLayout
+                    android:id="@+id/da_pwd_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/da_pwd_ico">
+
+                    <TextView
+                        android:id="@+id/tv_da_pwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/tv_border_bottom"
+                        android:padding="6dp"
+                        android:text="Current Password*"
+                        android:textColor="@color/formTextColor"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/et_da_pwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_da_pwd"
+                        android:background="@color/white"
+                        android:hint="Enter your password"
+                        android:inputType="textPassword"
+                        android:padding="6dp"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/da_btn_authenticate"
+                android:layout_below="@+id/da_ico_pwd_box"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="15dp"
+                android:text="Authenticate"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/da_2_rl_box"
+            android:layout_below="@+id/da_1_rl_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rl_border"
+            app:layout_constraintTop_toBottomOf="@+id/da_1_rl_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/da_tv_authenticate_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:text="Your profile is not authenticated yet!"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/da_btn_del_profile"
+                android:layout_below="@+id/da_tv_authenticate_status"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="15dp"
+                android:text="Delete Profile"
+                android:textStyle="bold"
+                android:enabled="false"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/da_progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+</ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipeContainer">
+
+    <ScrollView
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.UserProfileActivity"
+        android:background="@color/main">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp">
+
+            <View
+                android:id="@+id/up_v_1"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:background="@color/royalBlue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/up_dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@drawable/dp_border"
+                app:layout_constraintBottom_toTopOf="@+id/up_tv_welcome"
+                app:layout_constraintStart_toStartOf="@+id/up_v_1"
+                app:layout_constraintEnd_toEndOf="@+id/up_v_1"
+                app:layout_constraintTop_toTopOf="@+id/up_v_1"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@+id/up_tv_welcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loading_text"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+                app:layout_constraintStart_toStartOf="@+id/up_v_1"
+                app:layout_constraintEnd_toEndOf="@+id/up_v_1"
+                android:layout_marginBottom="20dp"/>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="300dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/rl_border"
+                android:padding="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/up_name_l1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tv_border_bottom"
+                    android:paddingBottom="1dp"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/outline_person_48"
+                        android:padding="5dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/up_et_firstname"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/tv_border_bottom"
+                            android:hint="@string/loading_text"
+                            android:inputType="textPersonName"
+                            android:textSize="16sp"
+                            android:padding="6dp"/>
+                        <EditText
+                            android:id="@+id/up_et_lastname"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:hint="@string/loading_text"
+                            android:inputType="textPersonName"
+                            android:textSize="16sp"
+                            android:padding="6dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/up_email_l1"
+                    android:layout_below="@+id/up_name_l1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tv_border_bottom"
+                    android:paddingBottom="1dp"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/outline_email_48"
+                        android:padding="5dp"/>
+
+                    <EditText
+                        android:id="@+id/up_et_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:hint="@string/loading_text"
+                        android:inputType="textEmailAddress"
+                        android:textSize="16sp"
+                        android:padding="6dp"
+                        android:focusable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/up_mobile_l1"
+                    android:layout_below="@+id/up_email_l1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tv_border_bottom"
+                    android:paddingBottom="1dp"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/outline_phone_48"
+                        android:padding="5dp"/>
+
+                    <EditText
+                        android:id="@+id/up_et_mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:hint="@string/loading_text"
+                        android:inputType="phone"
+                        android:textSize="16sp"
+                        android:padding="6dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/up_dob_l1"
+                    android:layout_below="@+id/up_mobile_l1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tv_border_bottom"
+                    android:paddingBottom="1dp"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/outline_cake_48"
+                        android:padding="5dp"/>
+
+                    <EditText
+                        android:id="@+id/up_et_dob"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:hint="@string/loading_text"
+                        android:inputType="date"
+                        android:textSize="16sp"
+                        android:padding="6dp"
+                        android:focusable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/up_gender_l1"
+                    android:layout_below="@+id/up_dob_l1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tv_border_bottom"
+                    android:paddingBottom="1dp"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/outline_gender_48"
+                        android:padding="6dp"
+                        android:layout_gravity="center"/>
+
+                    <RadioGroup
+                        android:id="@+id/rbg_up_gender"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_weight="2"
+                        android:padding="6dp">
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/up_radio_male"
+                            android:text="Male"
+                            android:textSize="16sp"
+                            android:textColor="@color/formTextColor"
+                            android:clickable="false"/>
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/up_radio_female"
+                            android:text="Female"
+                            android:textSize="16sp"
+                            android:textColor="@color/formTextColor"
+                            android:clickable="false"/>
+                    </RadioGroup>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/up_img_btn"
+                    android:layout_below="@+id/up_gender_l1"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:text="edit"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/up_progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

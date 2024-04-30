@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "971201986175",
+    "firebase_url": "https://loan-manager-v01-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "loan-manager-v01",
+    "storage_bucket": "loan-manager-v01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971201986175:android:590da6d9402f13d914c94a",
+        "android_client_info": {
+          "package_name": "com.kaluwa.enterprises.loanmanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3kM6bZC9HgihMmC6WfAj0bArv5YxzW2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

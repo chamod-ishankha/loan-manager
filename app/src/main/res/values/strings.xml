@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Loan Manager</string>
+    <string name="reset_btn_text"><u>Click here to reset</u></string>
+    <string name="register_btn_text"><u>Register</u></string>
+    <string name="loading_text">Loading...</string>
+    
+    <string name="select_lt_dd">Select your loan type</string>
+</resources>
