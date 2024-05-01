@@ -1,6 +1,7 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.USER_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.setUpDatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.models.User;
+import com.kaluwa.enterprises.loanmanager.utils.Utils;
 
 import java.util.Calendar;
 
@@ -210,22 +212,8 @@ public class RegisterActivity extends AppCompatActivity {
         rbgRegGender = findViewById(R.id.rbg_reg_gender);
         rbgRegGender.clearCheck();
 
-        // setting up date picker on EditText
-        etRegDob.setOnClickListener(v -> {
-            final Calendar calendar = Calendar.getInstance();
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int month = calendar.get(Calendar.MONTH);
-            int year = calendar.get(Calendar.YEAR);
-
-            // Date Picker Dialog
-            datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    etRegDob.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                }
-            } , year, month, day);
-            datePicker.show();
-        });
+        // call custom date-picker
+        setUpDatePicker(etRegDob, this);
     }
 
     @Override
