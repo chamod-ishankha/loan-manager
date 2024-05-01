@@ -23,4 +23,7 @@ public class Loan {
     private String description;
     private String lenderInfo;
     private String contactInfo;
+
+    private String loanTypeIcon;
+    private String loanTypeName;
 }
