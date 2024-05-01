@@ -1,8 +1,10 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
+import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.setUpDatePicker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,10 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -32,6 +36,7 @@ import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.models.Loan;
 import com.kaluwa.enterprises.loanmanager.models.LoanType;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class AddLoanActivity extends AppCompatActivity {
@@ -143,9 +148,13 @@ public class AddLoanActivity extends AppCompatActivity {
                 etContactInfo.setError("Contact number should have 10 numbers.");
                 etContactInfo.requestFocus();
             } else {
-                double loanAmtDbl, rateDbl, installmentDbl = 0;
+                double loanAmtDbl, rateDbl, installmentDbl = 0.00, additionalChargesDbl = 0.00;
                 loanAmtDbl = Double.parseDouble(loanAmt);
                 rateDbl = Double.parseDouble(rate);
+
+                if (!TextUtils.isEmpty(additionalCharges)) {
+                    additionalChargesDbl = Double.parseDouble(additionalCharges);
+                }
 
                 if (loanAmtDbl < 1000) {
                     etLoanAmt.setError("Loan amount must be greater than Rs. 1000.00");
@@ -160,10 +169,42 @@ public class AddLoanActivity extends AppCompatActivity {
                         etInstallment.requestFocus();
                     }
                 } else {
+                    // set loan model
+                    loan.setLoanTypeId(Integer.parseInt(loanTypeId));
+                    loan.setLoanAmount(loanAmtDbl);
+                    loan.setInterestRate(rateDbl);
+                    loan.setTerms(Integer.parseInt(terms));
+                    loan.setStartDate(stDate);
+                    loan.setDueDate(dueDate);
+                    loan.setInstallmentAmount(installmentDbl);
+                    loan.setFop(fop);
+                    loan.setAdditionalCharges(additionalChargesDbl);
+                    loan.setDescription(desp);
+                    loan.setLenderInfo(lenderInfo);
+                    loan.setContactInfo(contactInfo);
+
+                    // Loan reference
+                    DatabaseReference loanReference = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE);
+                    // generate unique key for each loan
+                    String userId = authProfile.getCurrentUser().getUid();
+                    loan.setLoanId(loanReference.child(userId).push().getKey());
+
+                    // save the loan
                     // loading enabled
                     handleLoading(progressBar, overlay, true);
-                    // loading disabled
-                    handleLoading(progressBar, overlay, false);
+                    loanReference.child(userId).child(loan.getLoanId()).setValue(loan).addOnSuccessListener(unused -> {
+                        // loading disabled
+                        handleLoading(progressBar, overlay, false);
+                        Toast.makeText(this, "Loan successfully added.", Toast.LENGTH_SHORT).show();
+                        // refresh activity
+                        startActivity(getIntent());
+                        finish();
+                        overridePendingTransition(0,0);
+                    }).addOnFailureListener(e -> {
+                        // loading disabled
+                        handleLoading(progressBar, overlay, false);
+                        Toast.makeText(this, "Error while adding your loan: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
                 }
             }
 

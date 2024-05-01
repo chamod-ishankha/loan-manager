@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Loan {
+    private String loanId;
     private int loanTypeId;
     private Double loanAmount;
     private Double interestRate;
     private int terms;
-    private LocalDate startDate;
-    private LocalDate dueDate;
+    private String startDate;
+    private String dueDate;
     private Double installmentAmount;
     private String fop;
     private Double additionalCharges;
