@@ -118,7 +118,6 @@ public class DashboardActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d(TAG, error.getDetails());
                 Toast.makeText(DashboardActivity.this, "Data retriving error: "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                swipeContainer.setRefreshing(false);
                 isLoading = false;
                 progressBar.setVisibility(View.GONE);
             }

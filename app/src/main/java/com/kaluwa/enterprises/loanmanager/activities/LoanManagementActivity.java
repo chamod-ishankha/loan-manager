@@ -1,5 +1,6 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.REQUEST_CODE_ADD;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
 
@@ -105,9 +106,9 @@ public class LoanManagementActivity extends AppCompatActivity {
         // extract loan reference from database
         Query loanQuery = null;
         if (key == null) {
-            loanQuery = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(userId).orderByKey().limitToFirst(2);
+            loanQuery = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(userId).orderByKey().limitToFirst(8);
         } else {
-            loanQuery = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(userId).orderByKey().startAfter(key).limitToFirst(2);
+            loanQuery = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(userId).orderByKey().startAfter(key).limitToFirst(8);
         }
 
         loanQuery.addValueEventListener(new ValueEventListener() {
@@ -132,6 +133,7 @@ public class LoanManagementActivity extends AppCompatActivity {
                                 if (id.toString().equals(String.valueOf(loanData.getLoanTypeId()))) {
                                     loanData.setLoanTypeIcon(loanTypeIcon);
                                     loanData.setLoanTypeName(loanTypeName);
+                                    break;
                                 }
                             }
                         }
@@ -144,7 +146,6 @@ public class LoanManagementActivity extends AppCompatActivity {
 
                     loanList.add(loanData);
                     key = data.getKey();
-                    break;
                 }
 
                 rvLMAdapter.setLoanList(loanList);
@@ -157,7 +158,6 @@ public class LoanManagementActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d(TAG, error.getDetails());
                 Toast.makeText(LoanManagementActivity.this, "Data retriving error: "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                swipeContainer.setRefreshing(false);
                 isLoading = false;
                 progressBar.setVisibility(View.GONE);
             }
@@ -167,7 +167,7 @@ public class LoanManagementActivity extends AppCompatActivity {
     private void onClickers() {
         fabAdd.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddLoanActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_ADD);
         });
     }
 
@@ -238,5 +238,17 @@ public class LoanManagementActivity extends AppCompatActivity {
 
         // Configure refresh colors
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_ADD && resultCode == RESULT_OK) {
+            // Refresh the list here
+            startActivity(getIntent());
+            finish();
+            overridePendingTransition(0,0);
+        }
     }
 }

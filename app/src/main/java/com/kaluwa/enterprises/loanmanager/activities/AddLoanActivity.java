@@ -4,6 +4,7 @@ import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LO
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.setUpDatePicker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -312,8 +313,8 @@ public class AddLoanActivity extends AppCompatActivity {
         int id = loanTypeItemList.getItemId();
 
         if (id == android.R.id.home) {
+            setResult(RESULT_OK);
             this.finish();
-            return true;
         }
 
         return super.onOptionsItemSelected(loanTypeItemList);
@@ -334,5 +335,12 @@ public class AddLoanActivity extends AppCompatActivity {
 
         // Configure refresh colors
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
+        super.onBackPressed();
     }
 }
