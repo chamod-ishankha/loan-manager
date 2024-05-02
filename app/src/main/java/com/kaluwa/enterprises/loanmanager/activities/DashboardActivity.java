@@ -27,6 +27,7 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.adapters.holders.RVDashboardViewHolder;
@@ -41,7 +42,9 @@ public class DashboardActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
     private FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> rvDBAdapter;
     private ProgressBar progressBar;
-    private int initialDashboardLimit = 10;
+    private String key = null;
+    private boolean isLoading = false;
+    private int initialDashboardLimit = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,21 +64,67 @@ public class DashboardActivity extends AppCompatActivity {
         LinearLayoutManager llManager = new LinearLayoutManager(this);
         dbRecycler.setLayoutManager(llManager);
 
-        rvDBAdapter = loadData();
+        try {
+            rvDBAdapter = loadData();
 
-        // set adapter to recycler view
-        dbRecycler.setAdapter(rvDBAdapter);
+            // set adapter to recycler view
+            dbRecycler.setAdapter(rvDBAdapter);
+
+            dbRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    int totalItem = linearLayoutManager.getItemCount();
+                    int lastVisible = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                    if (totalItem < (lastVisible + 3)) {
+                        if (!isLoading) {
+                            isLoading = true;
+                            loadMoreData();
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(this, "Something went wrong: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadMoreData() {
+        try {
+            progressBar.setVisibility(View.VISIBLE);
+            Query query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey().startAfter(key).limitToFirst(initialDashboardLimit);
+
+            FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>()
+                    .setQuery(query, snapshot -> {
+                        key = snapshot.getKey();
+                        return Objects.requireNonNull(snapshot.getValue(Dashboard.class));
+                    })
+                    .build();
+
+            // Update the existing adapter with new options
+            System.out.println(options.getSnapshots());
+            if (!options.getSnapshots().isEmpty()) {
+                rvDBAdapter.updateOptions(options);
+            }
+            isLoading = false;
+            progressBar.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> loadData() {
         // Show progress bar
         progressBar.setVisibility(View.VISIBLE);
 
-        FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>()
-                .setQuery(FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey(), new SnapshotParser<Dashboard>() {
+        Query query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey().limitToFirst(initialDashboardLimit);
+
+        FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>().setQuery(query, new SnapshotParser<Dashboard>() {
                     @NonNull
                     @Override
                     public Dashboard parseSnapshot(@NonNull DataSnapshot snapshot) {
+                        key = snapshot.getKey();
                         return Objects.requireNonNull(snapshot.getValue(Dashboard.class));
                     }
                 }).build();
@@ -111,21 +160,19 @@ public class DashboardActivity extends AppCompatActivity {
                     }
                 });
 
-                // set content to card
-                holder.tvTitle.setText(item.getTitle());
-                holder.tvSubtitle.setText(item.getSubTitle());
-
                 // set color codes to background of card, title, subtitle
                 try {
+                    // set content to card
+                    holder.tvTitle.setText(item.getTitle());
+                    holder.tvSubtitle.setText(item.getSubTitle());
                     holder.itemCardView.setBackground(applyColorToBackground(DashboardActivity.this, item.getBcCode(), R.drawable.card_item_bg_border));
                     holder.tvTitle.setTextColor(Color.parseColor(item.getTcCode()));
                     holder.tvSubtitle.setTextColor(Color.parseColor(item.getStcCode()));
+                    // set icon to image view
+                    holder.ivImageLogo.setImageResource(getResources().getIdentifier(item.getDrawable(), "drawable", getPackageName()));
                 } catch (Exception e) {
                     Log.d(String.valueOf(position), e.getMessage());
                 }
-
-                // set icon to image view
-                holder.ivImageLogo.setImageResource(getResources().getIdentifier(item.getDrawable(), "drawable", getPackageName()));
             }
 
             @NonNull
@@ -140,6 +187,13 @@ public class DashboardActivity extends AppCompatActivity {
                 super.onDataChanged();
                 // Hide progress bar when data loading is complete
                 progressBar.setVisibility(View.GONE);
+                isLoading = false;
+
+            }
+
+            @Override
+            public int getItemCount() {
+                return options.getSnapshots().size();
             }
         };
     }

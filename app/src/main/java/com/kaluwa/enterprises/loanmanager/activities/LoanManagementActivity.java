@@ -33,7 +33,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
-import com.kaluwa.enterprises.loanmanager.adapters.RVDashboardAdapter;
 import com.kaluwa.enterprises.loanmanager.adapters.RVLoanManagementAdapter;
 import com.kaluwa.enterprises.loanmanager.models.Loan;
 

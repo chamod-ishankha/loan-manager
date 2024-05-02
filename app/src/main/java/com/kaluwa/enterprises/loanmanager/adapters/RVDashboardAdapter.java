@@ -81,21 +81,21 @@ public class RVDashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         };
 
-        // set content to card
-        viewHolder.tvTitle.setText(item.getTitle());
-        viewHolder.tvSubtitle.setText(item.getSubTitle());
-
         // set color codes to background of card, title, subtitle
         try {
+            // set content to card
+            viewHolder.tvTitle.setText(item.getTitle());
+            viewHolder.tvSubtitle.setText(item.getSubTitle());
             viewHolder.itemCardView.setBackground(applyColorToBackground(context, item.getBcCode(), R.drawable.card_item_bg_border));
             viewHolder.tvTitle.setTextColor(Color.parseColor(item.getTcCode()));
             viewHolder.tvSubtitle.setTextColor(Color.parseColor(item.getStcCode()));
+            // set icon to image view
+            if (item.getDrawable() != null) {
+                viewHolder.ivImageLogo.setImageResource(context.getResources().getIdentifier(item.getDrawable(), "drawable", context.getPackageName()));
+            }
         } catch (Exception e) {
             Log.d(String.valueOf(position), e.getMessage());
         }
-
-        // set icon to image view
-        viewHolder.ivImageLogo.setImageResource(context.getResources().getIdentifier(item.getDrawable(), "drawable", context.getPackageName()));
 
         // onclick listeners
         onClickers(viewHolder, item, position, onClickListeners);
