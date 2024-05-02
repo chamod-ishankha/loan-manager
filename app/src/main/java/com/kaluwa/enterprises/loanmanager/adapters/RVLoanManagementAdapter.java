@@ -1,15 +1,28 @@
 package com.kaluwa.enterprises.loanmanager.adapters;
 
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.EDIT_ACTION;
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.VIEW_ACTION;
+
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
+import com.kaluwa.enterprises.loanmanager.activities.LoanManagementActionActivity;
 import com.kaluwa.enterprises.loanmanager.adapters.holders.RVLoanManagementViewHolder;
 import com.kaluwa.enterprises.loanmanager.models.Loan;
 
@@ -41,7 +54,7 @@ public class RVLoanManagementAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         RVLoanManagementViewHolder viewHolder = (RVLoanManagementViewHolder) holder;
-        Loan item = loanList.get(position);
+        Loan loanItem = loanList.get(position);
 
         // decimal format
         DecimalFormat df = new DecimalFormat("#.##");
@@ -50,16 +63,39 @@ public class RVLoanManagementAdapter extends RecyclerView.Adapter<RecyclerView.V
         // set content to the card
         String loanId = String.format("LI@%06d", position + 1);
         viewHolder.tvLoanIdValue.setText(loanId);
-        viewHolder.tvLoanAmountValue.setText("Rs. " + df.format(item.getLoanAmount()));
-        viewHolder.tvLoanTermValue.setText(String.valueOf(item.getTerms()));
-        viewHolder.tvLoanTypeValue.setText(item.getLoanTypeName());
+        viewHolder.tvLoanAmountValue.setText("Rs. " + df.format(loanItem.getLoanAmount()));
+        viewHolder.tvLoanTermValue.setText(String.valueOf(loanItem.getTerms()));
+        viewHolder.tvLoanTypeValue.setText(loanItem.getLoanTypeName());
 
         // set icon to image view
-        if (!TextUtils.isEmpty(item.getLoanTypeIcon())) {
-            viewHolder.ivLoanTypeIcon.setImageResource(context.getResources().getIdentifier(item.getLoanTypeIcon(), "drawable", context.getPackageName()));
+        if (!TextUtils.isEmpty(loanItem.getLoanTypeIcon())) {
+            viewHolder.ivLoanTypeIcon.setImageResource(context.getResources().getIdentifier(loanItem.getLoanTypeIcon(), "drawable", context.getPackageName()));
         } else {
             viewHolder.ivLoanTypeIcon.setImageResource(context.getResources().getIdentifier("icon_unavailable", "drawable", context.getPackageName()));
         }
+
+        viewHolder.cvLoanItemCard.setOnLongClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, viewHolder.cvLoanItemCard);
+            popupMenu.inflate(R.menu.option_lm_item_menu);
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.lm_menu_view) {
+                    Intent intent = new Intent(context, LoanManagementActionActivity.class);
+                    intent.putExtra(VIEW_ACTION, loanItem);
+                    context.startActivity(intent);
+                } else if (item.getItemId() == R.id.lm_menu_edit)  {
+                    Intent intent = new Intent(context, LoanManagementActionActivity.class);
+                    intent.putExtra(EDIT_ACTION, loanItem);
+                    context.startActivity(intent);
+                } else if (item.getItemId() == R.id.lm_menu_remove) {
+                    Toast.makeText(context, "Item remove called", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            });
+            popupMenu.show();
+            return true;
+        });
+
+
     }
 
     @Override

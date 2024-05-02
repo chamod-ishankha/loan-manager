@@ -1,5 +1,6 @@
 package com.kaluwa.enterprises.loanmanager.models;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Loan {
+public class Loan implements Serializable {
     private String loanId;
     private int loanTypeId;
     private Double loanAmount;

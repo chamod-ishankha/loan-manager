@@ -15,6 +15,9 @@
         android:theme="@style/Theme.LoanManager"
         tools:targetApi="31">
         <activity
+            android:name=".activities.LoanManagementActionActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.AddLoanActivity"
             android:exported="false" />
         <activity
