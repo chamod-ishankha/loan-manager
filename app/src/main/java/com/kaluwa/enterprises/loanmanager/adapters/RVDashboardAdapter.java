@@ -9,52 +9,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.activities.InstallmentManagementActivity;
 import com.kaluwa.enterprises.loanmanager.activities.LoanHistoryActivity;
 import com.kaluwa.enterprises.loanmanager.activities.LoanManagementActivity;
-import com.kaluwa.enterprises.loanmanager.activities.LoginActivity;
 import com.kaluwa.enterprises.loanmanager.activities.PayDayRemindersActivity;
 import com.kaluwa.enterprises.loanmanager.activities.PendingLoansActivity;
 import com.kaluwa.enterprises.loanmanager.adapters.holders.RVDashboardViewHolder;
 import com.kaluwa.enterprises.loanmanager.models.Dashboard;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class RVDashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RVDashboardAdapter extends FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> {
 
     private Context context;
-    private List<Dashboard> dashboardList = new ArrayList<>();
+    private ProgressBar progressBar;
 
-    public RVDashboardAdapter(Context context) {
+    public RVDashboardAdapter(@NonNull FirebaseRecyclerOptions<Dashboard> options, ProgressBar progressBar, Context context) {
+        super(options);
         this.context = context;
-    }
-
-    public void setItems(ArrayList<Dashboard> item) {
-        dashboardList.addAll(item);
-    }
-
-    @NonNull
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_rv_item, parent, false);
-        return new RVDashboardViewHolder(view);
+        this.progressBar = progressBar;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        RVDashboardViewHolder viewHolder = (RVDashboardViewHolder) holder;
-        Dashboard item = dashboardList.get(position);
-
+    protected void onBindViewHolder(@NonNull RVDashboardViewHolder holder, int position, @NonNull Dashboard item) {
         // Define onClickListener for each card
-        CardView.OnClickListener[] onClickListeners = new View.OnClickListener[dashboardList.size()];
-        onClickListeners[position] = v -> {
+        holder.itemCardView.setOnClickListener(v -> {
             Intent intent;
             switch (item.getId()) {
                 case 1:
@@ -79,38 +63,34 @@ public class RVDashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (intent != null) {
                 context.startActivity(intent);
             }
-        };
+        });
 
         // set color codes to background of card, title, subtitle
         try {
             // set content to card
-            viewHolder.tvTitle.setText(item.getTitle());
-            viewHolder.tvSubtitle.setText(item.getSubTitle());
-            viewHolder.itemCardView.setBackground(applyColorToBackground(context, item.getBcCode(), R.drawable.card_item_bg_border));
-            viewHolder.tvTitle.setTextColor(Color.parseColor(item.getTcCode()));
-            viewHolder.tvSubtitle.setTextColor(Color.parseColor(item.getStcCode()));
+            holder.tvTitle.setText(item.getTitle());
+            holder.tvSubtitle.setText(item.getSubTitle());
+            holder.itemCardView.setBackground(applyColorToBackground(context, item.getBcCode(), R.drawable.card_item_bg_border));
+            holder.tvTitle.setTextColor(Color.parseColor(item.getTcCode()));
+            holder.tvSubtitle.setTextColor(Color.parseColor(item.getStcCode()));
             // set icon to image view
-            if (item.getDrawable() != null) {
-                viewHolder.ivImageLogo.setImageResource(context.getResources().getIdentifier(item.getDrawable(), "drawable", context.getPackageName()));
-            }
+            holder.ivImageLogo.setImageResource(context.getResources().getIdentifier(item.getDrawable(), "drawable", context.getPackageName()));
         } catch (Exception e) {
             Log.d(String.valueOf(position), e.getMessage());
         }
-
-        // onclick listeners
-        onClickers(viewHolder, item, position, onClickListeners);
     }
 
-    private void onClickers(RVDashboardViewHolder viewHolder, Dashboard item, int position, CardView.OnClickListener[] onClickListeners) {
-
-        // card oncliker
-        // Set onClickListener for the card based on position
-        viewHolder.itemCardView.setOnClickListener(onClickListeners[position]);
-
+    @NonNull
+    @Override
+    public RVDashboardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_rv_item, parent, false);
+        return new RVDashboardViewHolder(view);
     }
 
     @Override
-    public int getItemCount() {
-        return dashboardList.size();
+    public void onDataChanged() {
+        super.onDataChanged();
+        // Hide progress bar when data loading is complete
+        progressBar.setVisibility(View.GONE);
     }
 }

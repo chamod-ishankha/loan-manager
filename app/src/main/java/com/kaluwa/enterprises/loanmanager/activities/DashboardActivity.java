@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
+import com.kaluwa.enterprises.loanmanager.adapters.RVDashboardAdapter;
 import com.kaluwa.enterprises.loanmanager.adapters.holders.RVDashboardViewHolder;
 import com.kaluwa.enterprises.loanmanager.models.Dashboard;
 
@@ -43,7 +44,6 @@ public class DashboardActivity extends AppCompatActivity {
     private FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> rvDBAdapter;
     private ProgressBar progressBar;
     private String key = null;
-    private boolean isLoading = false;
     private int initialDashboardLimit = 5;
 
     @Override
@@ -66,142 +66,46 @@ public class DashboardActivity extends AppCompatActivity {
 
         try {
             rvDBAdapter = loadData();
-
             // set adapter to recycler view
             dbRecycler.setAdapter(rvDBAdapter);
-
-            dbRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    int totalItem = linearLayoutManager.getItemCount();
-                    int lastVisible = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-
-                    if (totalItem < (lastVisible + 3)) {
-                        if (!isLoading) {
-                            isLoading = true;
-                            loadMoreData();
-                        }
-                    }
-                }
-            });
         } catch (Exception e) {
             Toast.makeText(this, "Something went wrong: "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void loadMoreData() {
-        try {
-            progressBar.setVisibility(View.VISIBLE);
-            Query query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey().startAfter(key).limitToFirst(initialDashboardLimit);
-
-            FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>()
-                    .setQuery(query, snapshot -> {
-                        key = snapshot.getKey();
-                        return Objects.requireNonNull(snapshot.getValue(Dashboard.class));
-                    })
-                    .build();
-
-            // Update the existing adapter with new options
-            System.out.println(options.getSnapshots());
-            if (!options.getSnapshots().isEmpty()) {
-                rvDBAdapter.updateOptions(options);
-            }
-            isLoading = false;
-            progressBar.setVisibility(View.GONE);
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> loadData() {
         // Show progress bar
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey().limitToFirst(initialDashboardLimit);
-
-        FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>().setQuery(query, new SnapshotParser<Dashboard>() {
+        Query query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey();
+        FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>()
+                .setQuery(query, new SnapshotParser<Dashboard>() {
                     @NonNull
                     @Override
                     public Dashboard parseSnapshot(@NonNull DataSnapshot snapshot) {
                         key = snapshot.getKey();
+                        System.out.println("key: "+key);
                         return Objects.requireNonNull(snapshot.getValue(Dashboard.class));
                     }
                 }).build();
-
-        return new FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull RVDashboardViewHolder holder, int position, @NonNull Dashboard item) {
-                // Define onClickListener for each card
-                holder.itemCardView.setOnClickListener(v -> {
-                    Intent intent;
-                    switch (item.getId()) {
-                        case 1:
-                            intent = new Intent(DashboardActivity.this, LoanManagementActivity.class);
-                            break;
-                        case 2:
-                            intent = new Intent(DashboardActivity.this, InstallmentManagementActivity.class);
-                            break;
-                        case 3:
-                            intent = new Intent(DashboardActivity.this, PendingLoansActivity.class);
-                            break;
-                        case 4:
-                            intent = new Intent(DashboardActivity.this, LoanHistoryActivity.class);
-                            break;
-                        case 5:
-                            intent = new Intent(DashboardActivity.this, PayDayRemindersActivity.class);
-                            break;
-                        default:
-                            intent = null;
-                            break;
-                    }
-                    if (intent != null) {
-                        startActivity(intent);
-                    }
-                });
-
-                // set color codes to background of card, title, subtitle
-                try {
-                    // set content to card
-                    holder.tvTitle.setText(item.getTitle());
-                    holder.tvSubtitle.setText(item.getSubTitle());
-                    holder.itemCardView.setBackground(applyColorToBackground(DashboardActivity.this, item.getBcCode(), R.drawable.card_item_bg_border));
-                    holder.tvTitle.setTextColor(Color.parseColor(item.getTcCode()));
-                    holder.tvSubtitle.setTextColor(Color.parseColor(item.getStcCode()));
-                    // set icon to image view
-                    holder.ivImageLogo.setImageResource(getResources().getIdentifier(item.getDrawable(), "drawable", getPackageName()));
-                } catch (Exception e) {
-                    Log.d(String.valueOf(position), e.getMessage());
-                }
-            }
-
-            @NonNull
-            @Override
-            public RVDashboardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(DashboardActivity.this).inflate(R.layout.layout_rv_item, parent, false);
-                return new RVDashboardViewHolder(view);
-            }
-
-            @Override
-            public void onDataChanged() {
-                super.onDataChanged();
-                // Hide progress bar when data loading is complete
-                progressBar.setVisibility(View.GONE);
-                isLoading = false;
-
-            }
-
-            @Override
-            public int getItemCount() {
-                return options.getSnapshots().size();
-            }
-        };
+        return new RVDashboardAdapter(options, progressBar, this);
     }
 
     @Override
     protected void onStart() {
-        rvDBAdapter.startListening();
         super.onStart();
+        if (rvDBAdapter != null) {
+            rvDBAdapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (rvDBAdapter != null) {
+            rvDBAdapter.stopListening();
+        }
+        super.onDestroy();
     }
 
     // Creating ActionBar Menu
