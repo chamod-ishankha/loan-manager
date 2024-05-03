@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import com.kaluwa.enterprises.loanmanager.R;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 
 public class Utils {
@@ -39,6 +40,13 @@ public class Utils {
             }, year, month, day);
             datePicker.show();
         });
+    }
+
+    public static DecimalFormat getDecimalFormatter() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setMinimumFractionDigits(2);
+        df.setMaximumFractionDigits(2);
+        return df;
     }
 
 }

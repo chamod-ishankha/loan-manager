@@ -18,9 +18,6 @@
             android:name=".activities.LoanManagementActionActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.AddLoanActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.PayDayRemindersActivity"
             android:exported="false" />
         <activity

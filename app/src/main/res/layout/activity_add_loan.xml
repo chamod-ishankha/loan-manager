@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main"
-        tools:context=".activities.AddLoanActivity">
+        tools:context=".activities.LoanManagementActionActivity">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                         android:layout_marginTop="30dp"
                         android:background="@color/royalBlue"
                         android:gravity="center"
-                        android:text="Get Started with Your Next Loan"
+                        android:text="Head Line"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Title"
                         android:textColor="@color/white" />
@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:background="@color/royalBlue"
                         android:gravity="center"
-                        android:text="Enter the details of your new loan to stay on top of your finances."
+                        android:text="Sub Headline"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                         android:textColor="@color/white" />

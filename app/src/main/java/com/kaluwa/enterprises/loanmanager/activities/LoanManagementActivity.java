@@ -1,18 +1,15 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.ADD_ACTION;
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.REQUEST_CODE_ADD;
-import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.DASHBOARD_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.VIEW_ACTION;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
-import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -24,27 +21,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
-import com.kaluwa.enterprises.loanmanager.adapters.RVDashboardAdapter;
 import com.kaluwa.enterprises.loanmanager.adapters.RVLoanManagementAdapter;
 import com.kaluwa.enterprises.loanmanager.adapters.holders.RVLoanManagementViewHolder;
-import com.kaluwa.enterprises.loanmanager.models.Dashboard;
 import com.kaluwa.enterprises.loanmanager.models.Loan;
-
-import java.util.Objects;
 
 public class LoanManagementActivity extends AppCompatActivity {
 
@@ -79,7 +64,6 @@ public class LoanManagementActivity extends AppCompatActivity {
         lmRecyler.setLayoutManager(llManager);
 
         try {
-
             rvLMAdapter = loadData(progressBar);
             // set adapter to recycler view
             lmRecyler.setAdapter(rvLMAdapter);
@@ -105,7 +89,8 @@ public class LoanManagementActivity extends AppCompatActivity {
 
     private void onClickers() {
         fabAdd.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddLoanActivity.class);
+            Intent intent = new Intent(this, LoanManagementActionActivity.class);
+            intent.putExtra(ADD_ACTION, ADD_ACTION);
             startActivityForResult(intent, REQUEST_CODE_ADD);
         });
     }

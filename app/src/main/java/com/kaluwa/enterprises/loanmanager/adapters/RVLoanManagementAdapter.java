@@ -2,9 +2,13 @@ package com.kaluwa.enterprises.loanmanager.adapters;
 
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.EDIT_ACTION;
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.VIEW_ACTION;
+import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.getDecimalFormatter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,7 +29,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,17 +47,20 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoanManagementViewHolder> {
 
     private final static String TAG = "RVLoanManagementAdapter";
     private Context context;
     private ProgressBar progressBar;
+    private FirebaseAuth authProfile;
 
     public RVLoanManagementAdapter(FirebaseRecyclerOptions<Loan> options, ProgressBar progressBar, Context context) {
         super(options);
         this.context = context;
         this.progressBar = progressBar;
+        this.authProfile = FirebaseAuth.getInstance();
     }
 
     protected void onBindViewHolder(@NonNull RVLoanManagementViewHolder viewHolder, int position, @NonNull Loan loanItem) {
@@ -85,9 +94,7 @@ public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoa
             });
 
             // decimal format
-            DecimalFormat df = new DecimalFormat("#.##");
-            df.setMinimumFractionDigits(2);
-            df.setMaximumFractionDigits(2);
+            DecimalFormat df = getDecimalFormatter();
             // set content to the card
             String loanId = String.format("LI@%06d", position + 1);
             viewHolder.tvLoanIdValue.setText(loanId);
@@ -116,14 +123,47 @@ public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoa
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.lm_menu_view) {
                     Intent intent = new Intent(context, LoanManagementActionActivity.class);
-                    intent.putExtra(VIEW_ACTION, loanItem);
+                    intent.putExtra(VIEW_ACTION, loanItem.getLoanId());
                     context.startActivity(intent);
                 } else if (item.getItemId() == R.id.lm_menu_edit) {
                     Intent intent = new Intent(context, LoanManagementActionActivity.class);
-                    intent.putExtra(EDIT_ACTION, loanItem);
+                    intent.putExtra(EDIT_ACTION, loanItem.getLoanId());
                     context.startActivity(intent);
                 } else if (item.getItemId() == R.id.lm_menu_remove) {
-                    Toast.makeText(context, "Item remove called", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                    dialogBuilder.setTitle("Delete Loan!");
+                    dialogBuilder.setMessage("Are you sure you want to delete this loan?");
+                    // disable outside click cancel
+                    dialogBuilder.setCancelable(false);
+                    // delete click
+                    dialogBuilder.setPositiveButton("Delete", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        progressBar.setVisibility(View.VISIBLE);
+                        FirebaseDatabase.getInstance()
+                                .getReference(LOAN_REFERENCE)
+                                .child(authProfile.getCurrentUser().getUid())
+                                .child(loanItem.getLoanId())
+                                .removeValue()
+                                .addOnSuccessListener(unused -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(context, "Loan item removed.", Toast.LENGTH_LONG).show();
+                                }).addOnFailureListener(e -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+                                    Toast.makeText(context, "Loan item remove failed.", Toast.LENGTH_LONG).show();
+                                });
+                    });
+                    // cancel click
+                    dialogBuilder.setNegativeButton("Cancel", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        dialog.cancel();
+                    });
+                    // Create the Alert dialog
+                    AlertDialog alertDialog = dialogBuilder.create();
+                    // Change the continue button color
+                    alertDialog.setOnShowListener(dialog -> {
+                        alertDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.red));
+                    });
+                    // Show the Alert Dialog box
+                    alertDialog.show();
                 }
                 return false;
             });
