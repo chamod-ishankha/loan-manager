@@ -4,8 +4,6 @@ import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LO
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.setUpDatePicker;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +34,6 @@ import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.models.Loan;
 import com.kaluwa.enterprises.loanmanager.models.LoanType;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class AddLoanActivity extends AppCompatActivity {
@@ -46,6 +42,8 @@ public class AddLoanActivity extends AppCompatActivity {
     private FirebaseAuth authProfile;
     private SwipeRefreshLayout swipeContainer;
     private Loan loan = new Loan();
+    private ArrayList<LoanType> loanTypeItemList = new ArrayList<>();
+    private ArrayAdapter<LoanType> loanTypeAdapterItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +198,7 @@ public class AddLoanActivity extends AppCompatActivity {
                         // refresh activity
                         startActivity(getIntent());
                         finish();
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                     }).addOnFailureListener(e -> {
                         // loading disabled
                         handleLoading(progressBar, overlay, false);
@@ -258,9 +256,6 @@ public class AddLoanActivity extends AppCompatActivity {
             tiLayoutFop.setHint("");
         });
     }
-
-    private ArrayList<LoanType> loanTypeItemList = new ArrayList<>();
-    private ArrayAdapter<LoanType> loanTypeAdapterItem;
 
     private void loadLoanTypes(AutoCompleteTextView loanTypeTvAutoComplete) {
         loanTypeAdapterItem = new ArrayAdapter<LoanType>(this, R.layout.list_item_dd, loanTypeItemList);
@@ -340,7 +335,7 @@ public class AddLoanActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         setResult(RESULT_OK);
-        finish();
+        this.finish();
         super.onBackPressed();
     }
 }

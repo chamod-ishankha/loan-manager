@@ -44,7 +44,6 @@ public class DashboardActivity extends AppCompatActivity {
     private FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> rvDBAdapter;
     private ProgressBar progressBar;
     private String key = null;
-    private int initialDashboardLimit = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,15 +79,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         Query query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey();
         FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>()
-                .setQuery(query, new SnapshotParser<Dashboard>() {
-                    @NonNull
-                    @Override
-                    public Dashboard parseSnapshot(@NonNull DataSnapshot snapshot) {
-                        key = snapshot.getKey();
-                        System.out.println("key: "+key);
-                        return Objects.requireNonNull(snapshot.getValue(Dashboard.class));
-                    }
-                }).build();
+                .setQuery(query, Dashboard.class)
+                .build();
         return new RVDashboardAdapter(options, progressBar, this);
     }
 
