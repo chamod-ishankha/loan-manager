@@ -1,5 +1,6 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
+import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.USER_REFERENCE;
 
 import android.content.Intent;
@@ -181,6 +182,7 @@ public class DeleteAccountActivity extends AppCompatActivity {
         }
 
         // Delete data from Realtime Database
+        // personal data
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(USER_REFERENCE);
         databaseReference.child(firebaseUser.getUid()).removeValue().addOnSuccessListener(unused -> {
             Log.d(TAG, "OnSuccess: "+firebaseUser.getUid()+" user's data deleted.");
@@ -188,6 +190,15 @@ public class DeleteAccountActivity extends AppCompatActivity {
             Log.d(TAG, "OnFailure: "+e.getMessage());
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         });
+
+        // loan data
+        FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(firebaseUser.getUid())
+                .removeValue().addOnSuccessListener(unused -> {
+                    Log.d(TAG, "OnSuccess: "+firebaseUser.getUid()+" user's loan data deleted.");
+                }).addOnFailureListener(e -> {
+                    Log.d(TAG, "OnFailure: "+e.getMessage());
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 
     // Creating ActionBar Menu

@@ -205,12 +205,21 @@ public class UserProfileActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Set User Dp (After user has uploaded)
-                    Uri uri = firebaseUser.getPhotoUrl();
+                    // Load user image from Firebase
+                    Uri userImageUri = firebaseUser.getPhotoUrl();
+                    Picasso.get().load(userImageUri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP)
+                            .placeholder(R.drawable.dp_loaing_sketch) // Use default image as a placeholder
+                            .error(R.drawable.dp_loaing_sketch) // Use default image if an error occurs
+                            .into(ivDp);
 
-                    // ImageViewer setImageURI() should not be used with regular URIs. So we are using Picasso.
-//                    Picasso.get().load(uri).fit().centerCrop(Gravity.TOP).into(ivDp);
-                    Picasso.get().load(uri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP).into(ivDp);
+
+//                    Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.dp_loaing_sketch);
+//                    Picasso.get().load(uri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP).into(ivDp);
+//                    // Set User Dp (After user has uploaded)
+//                    uri = firebaseUser.getPhotoUrl();
+//
+//                    // ImageViewer setImageURI() should not be used with regular URIs. So we are using Picasso.
+//                    Picasso.get().load(uri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP).into(ivDp);
                 }
                 progressBar.setVisibility(View.GONE);
             }
