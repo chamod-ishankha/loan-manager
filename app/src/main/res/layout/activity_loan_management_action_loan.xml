@@ -281,41 +281,8 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:id="@+id/al_ico_installment_amount_box"
-                        android:layout_below="@+id/al_ico_due_date_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/rl_border"
-                        android:orientation="horizontal"
-                        android:padding="10dp">
-
-                        <TextView
-                            android:id="@+id/al_tv_installment_amount"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="6dp"
-                            android:text="Installment Amount (if applicable)"
-                            android:textColor="@color/formTextColor"
-                            android:textSize="16sp"
-                            android:background="@drawable/tv_border_bottom"/>
-
-                        <EditText
-                            android:id="@+id/al_et_installment_amount"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/al_tv_installment_amount"
-                            android:background="@color/white"
-                            android:hint="Enter installment amount"
-                            android:inputType="numberDecimal"
-                            android:padding="6dp"
-                            android:textSize="16sp" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
                         android:id="@+id/al_ico_fop_box"
-                        android:layout_below="@+id/al_ico_installment_amount_box"
+                        android:layout_below="@+id/al_ico_due_date_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -328,7 +295,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="6dp"
-                            android:text="Frequency of Payments (if applicable)"
+                            android:text="Frequency of Payments*"
                             android:textColor="@color/formTextColor"
                             android:textSize="16sp"
                             android:background="@drawable/tv_border_bottom"/>
@@ -361,8 +328,109 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:id="@+id/al_ico_additional_fees_box"
+                        android:id="@+id/al_ico_installment_amount_box"
                         android:layout_below="@+id/al_ico_fop_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/rl_border"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/al_tv_installment_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:text="Payable Amount (frequency)"
+                            android:textColor="@color/formTextColor"
+                            android:textSize="16sp"
+                            android:background="@drawable/tv_border_bottom"/>
+
+                        <EditText
+                            android:id="@+id/al_et_installment_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/al_tv_installment_amount"
+                            android:background="@color/white"
+                            android:hint="Enter installment amount"
+                            android:inputType="numberDecimal"
+                            android:padding="6dp"
+                            android:textSize="16sp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/al_total_interest_box"
+                        android:layout_below="@+id/al_ico_installment_amount_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/rl_border"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/al_tv_tot_interest_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:text="Total Interest Amount"
+                            android:textColor="@color/formTextColor"
+                            android:textSize="16sp"
+                            android:background="@drawable/tv_border_bottom"/>
+
+                        <EditText
+                            android:id="@+id/al_et_tot_interest_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/al_tv_tot_interest_amount"
+                            android:background="@color/white"
+                            android:hint="0.00"
+                            android:inputType="numberDecimal"
+                            android:padding="6dp"
+                            android:textSize="16sp"
+                            android:enabled="false"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/al_total_principal_interest_box"
+                        android:layout_below="@+id/al_total_interest_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/rl_border"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/al_tv_tot_principal_interest_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:text="Total Principal &amp; Amount"
+                            android:textColor="@color/formTextColor"
+                            android:textSize="16sp"
+                            android:background="@drawable/tv_border_bottom"/>
+
+                        <EditText
+                            android:id="@+id/al_et_tot_principal_interest_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/al_tv_tot_principal_interest_amount"
+                            android:background="@color/white"
+                            android:hint="0.00"
+                            android:inputType="numberDecimal"
+                            android:padding="6dp"
+                            android:textSize="16sp"
+                            android:enabled="false"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/al_ico_additional_fees_box"
+                        android:layout_below="@+id/al_total_principal_interest_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"

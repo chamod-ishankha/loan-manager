@@ -5,12 +5,26 @@ import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.VIEW_ACTION;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateAnnuallyInstallment;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateAnnuallyTotalInterest;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateAnnuallyTotalInterestAndPrincipal;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateMonthlyInstallment;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateMonthlyTotalInterest;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateMonthlyTotalInterestAndPrincipal;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateQuarterlyInstallment;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateQuarterlyTotalInterest;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateQuarterlyTotalInterestAndPrincipal;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateSemiAnnuallyInstallment;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateSemiAnnuallyTotalInterest;
+import static com.kaluwa.enterprises.loanmanager.utils.Utils.calculateSemiAnnuallyTotalInterestAndPrincipal;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.getDecimalFormatter;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.setUpDatePicker;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -28,16 +42,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -47,9 +55,9 @@ import com.kaluwa.enterprises.loanmanager.models.Loan;
 import com.kaluwa.enterprises.loanmanager.models.LoanType;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 public class LoanManagementActionActivity extends AppCompatActivity {
 
@@ -60,8 +68,8 @@ public class LoanManagementActionActivity extends AppCompatActivity {
     private ArrayList<LoanType> loanTypeItemList = new ArrayList<>();
     private ArrayAdapter<LoanType> loanTypeAdapterItem;
 
-    private TextView tvHeadLine, tvSubHeadLine;
-    private EditText etLoanAmt, etInterestRate, etTerms, etStDate, etDueDate, etInstallment, etAdditionalCharges, etDesp, etLenderInfo, etContactInfo;
+    private TextView tvHeadLine, tvSubHeadLine, tvInstallment;
+    private EditText etLoanAmt, etInterestRate, etTerms, etStDate, etDueDate, etInstallment, etTotInterest, etTotPrincialInterest, etAdditionalCharges, etDesp, etLenderInfo, etContactInfo;
     private AutoCompleteTextView loanTypeTvAutoComplete, fopTvAutoComplete;
     private Button btnFunction;
     private ProgressBar progressBar;
@@ -71,7 +79,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_loan);
+        setContentView(R.layout.activity_loan_management_action_loan);
 
         authProfile = FirebaseAuth.getInstance();
         // set title
@@ -81,12 +89,15 @@ public class LoanManagementActionActivity extends AppCompatActivity {
 
         tvHeadLine = findViewById(R.id.tvAlRoyalBlueBoxHead);
         tvSubHeadLine = findViewById(R.id.tvAlRoyalBlueBoxSub);
+        tvInstallment = findViewById(R.id.al_tv_installment_amount);
         etLoanAmt = findViewById(R.id.al_et_loan_amount);
         etInterestRate = findViewById(R.id.al_et_interest_rate);
         etTerms = findViewById(R.id.al_et_terms);
         etStDate = findViewById(R.id.al_et_start_date);
         etDueDate = findViewById(R.id.al_et_due_date);
         etInstallment = findViewById(R.id.al_et_installment_amount);
+        etTotInterest = findViewById(R.id.al_et_tot_interest_amount);
+        etTotPrincialInterest = findViewById(R.id.al_et_tot_principal_interest_amount);
         etAdditionalCharges = findViewById(R.id.al_et_additional_fees);
         etDesp = findViewById(R.id.al_et_description);
         etLenderInfo = findViewById(R.id.al_et_lender_info);
@@ -103,13 +114,16 @@ public class LoanManagementActionActivity extends AppCompatActivity {
             // handle intent view
             String loanKey = (String) getIntent().getSerializableExtra(VIEW_ACTION);
             if (loanKey != null) {
+                callOnChangeListeners();
                 callViewLoan(loanKey);
             } else {
                 loanKey = (String) getIntent().getSerializableExtra(EDIT_ACTION);
                 if (loanKey != null) {
+                    callOnChangeListeners();
                     callEditLoan(loanKey);
                 } else if (getIntent().getSerializableExtra(ADD_ACTION).equals(ADD_ACTION)) {
                     loan = new Loan();
+                    callOnChangeListeners();
                     callAddLoan();
                 }
             }
@@ -118,6 +132,335 @@ public class LoanManagementActionActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void callOnChangeListeners() {
+        // terms onChange listener
+        etTerms.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @SuppressLint("NewApi")
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // due date change
+                try {
+                    // Define the desired date format
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+                    String stDate = etStDate.getText().toString();
+                    String terms = etTerms.getText().toString();
+                    if (!TextUtils.isEmpty(stDate) && !TextUtils.isEmpty(terms)) {
+                        int termsInt = Integer.parseInt(terms);
+                        LocalDate localStDate = LocalDate.parse(stDate, formatter);
+                        LocalDate localDueDate = localStDate.plusMonths(termsInt).plusDays(1);
+                        etDueDate.setText(localDueDate.format(formatter));
+                    } else {
+                        etDueDate.setText("");
+                    }
+                } catch (NumberFormatException e) {
+                    etDueDate.setText("");
+                }
+
+                // installment change
+                try {
+                    String fopName = fopTvAutoComplete.getText().toString();
+                    String loanAmountString = etLoanAmt.getText().toString();
+                    String interestRateString = etInterestRate.getText().toString();
+                    String durationString = etTerms.getText().toString();
+                    if (!TextUtils.isEmpty(fopName) && !TextUtils.isEmpty(loanAmountString) && !TextUtils.isEmpty(interestRateString) && !TextUtils.isEmpty(durationString)) {
+                        double loanAmount = Double.parseDouble(loanAmountString);
+                        double interestRate = Double.parseDouble(interestRateString);
+                        int duration = Integer.parseInt(durationString);
+                        double installmentAmt = 0.00;
+                        double totalInterestAmt = 0.00;
+                        double totalPrincipalInterest = 0.00;
+                        switch (fopName) {
+                            case "Monthly":
+                                installmentAmt = calculateMonthlyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateMonthlyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateMonthlyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            case "Quarterly":
+                                installmentAmt = calculateQuarterlyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateQuarterlyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateQuarterlyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            case "Semi-Annually":
+                                installmentAmt = calculateSemiAnnuallyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateSemiAnnuallyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateSemiAnnuallyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            case "Annually":
+                                installmentAmt = calculateAnnuallyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateAnnuallyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateAnnuallyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            default:
+                                break;
+                        }
+                        etInstallment.setText(getDecimalFormatter().format(installmentAmt));
+                        etTotInterest.setText(getDecimalFormatter().format(totalInterestAmt));
+                        etTotPrincialInterest.setText(getDecimalFormatter().format(totalPrincipalInterest));
+                    } else {
+                        etInstallment.setText("0.00");
+                    }
+                } catch (NumberFormatException e) {
+                    etInstallment.setText("0.00");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        // start date onChange listener
+        etStDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @SuppressLint("NewApi")
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    // Define the desired date format
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+                    String stDate = etStDate.getText().toString();
+                    String terms = etTerms.getText().toString();
+                    if (!TextUtils.isEmpty(stDate) && !TextUtils.isEmpty(terms)) {
+                        int termsInt = Integer.parseInt(terms);
+                        LocalDate localStDate = LocalDate.parse(stDate, formatter);
+                        LocalDate localDueDate = localStDate.plusMonths(termsInt).plusDays(1);
+                        etDueDate.setText(localDueDate.format(formatter));
+                    } else {
+                        etDueDate.setText("");
+                    }
+                } catch (NumberFormatException e) {
+                    etDueDate.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        // fop onChange listener
+        fopTvAutoComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                String fopName = fopTvAutoComplete.getText().toString();
+                if (!TextUtils.isEmpty(fopName)) {
+                    switch (fopName) {
+                        case "Monthly":
+                            tvInstallment.setText("Payable Amount (Monthly)");
+                            break;
+                        case "Quarterly":
+                            tvInstallment.setText("Payable Amount (Quarterly)");
+                            break;
+                        case "Semi-Annually":
+                            tvInstallment.setText("Payable Amount (Semi-Annually)");
+                            break;
+                        case "Annually":
+                            tvInstallment.setText("Payable Amount (Annually)");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    String fopName = fopTvAutoComplete.getText().toString();
+                    String loanAmountString = etLoanAmt.getText().toString();
+                    String interestRateString = etInterestRate.getText().toString();
+                    String durationString = etTerms.getText().toString();
+                    if (!TextUtils.isEmpty(fopName) && !TextUtils.isEmpty(loanAmountString) && !TextUtils.isEmpty(interestRateString) && !TextUtils.isEmpty(durationString)) {
+                        double loanAmount = Double.parseDouble(loanAmountString);
+                        double interestRate = Double.parseDouble(interestRateString);
+                        int duration = Integer.parseInt(durationString);
+                        double installmentAmt = 0.00;
+                        double totalInterestAmt = 0.00;
+                        double totalPrincipalInterest = 0.00;
+                        switch (fopName) {
+                            case "Monthly":
+                                installmentAmt = calculateMonthlyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateMonthlyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateMonthlyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                tvInstallment.setText("Payable Amount (Monthly)");
+                                break;
+                            case "Quarterly":
+                                installmentAmt = calculateQuarterlyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateQuarterlyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateQuarterlyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                tvInstallment.setText("Payable Amount (Quarterly)");
+                                break;
+                            case "Semi-Annually":
+                                installmentAmt = calculateSemiAnnuallyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateSemiAnnuallyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateSemiAnnuallyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                tvInstallment.setText("Payable Amount (Semi-Annually)");
+                                break;
+                            case "Annually":
+                                installmentAmt = calculateAnnuallyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateAnnuallyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateAnnuallyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                tvInstallment.setText("Payable Amount (Annually)");
+                                break;
+                            default:
+                                break;
+                        }
+                        etInstallment.setText(getDecimalFormatter().format(installmentAmt));
+                        etTotInterest.setText(getDecimalFormatter().format(totalInterestAmt));
+                        etTotPrincialInterest.setText(getDecimalFormatter().format(totalPrincipalInterest));
+                    } else {
+                        etInstallment.setText("0.00");
+                    }
+                    if (!TextUtils.isEmpty(fopName)) {
+                        switch (fopName) {
+                            case "Monthly":
+                                tvInstallment.setText("Payable Amount (Monthly)");
+                                break;
+                            case "Quarterly":
+                                tvInstallment.setText("Payable Amount (Quarterly)");
+                                break;
+                            case "Semi-Annually":
+                                tvInstallment.setText("Payable Amount (Semi-Annually)");
+                                break;
+                            case "Annually":
+                                tvInstallment.setText("Payable Amount (Annually)");
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        tvInstallment.setText("Payable Amount (frequncy)");
+                    }
+                } catch (NumberFormatException e) {
+                    etInstallment.setText("0.00");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        // loan amount change listener
+        etLoanAmt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    String fopName = fopTvAutoComplete.getText().toString();
+                    String loanAmountString = etLoanAmt.getText().toString();
+                    String interestRateString = etInterestRate.getText().toString();
+                    String durationString = etTerms.getText().toString();
+                    if (!TextUtils.isEmpty(fopName) && !TextUtils.isEmpty(loanAmountString) && !TextUtils.isEmpty(interestRateString) && !TextUtils.isEmpty(durationString)) {
+                        double loanAmount = Double.parseDouble(loanAmountString);
+                        double interestRate = Double.parseDouble(interestRateString);
+                        int duration = Integer.parseInt(durationString);
+                        double installmentAmt = 0.00;
+                        double totalInterestAmt = 0.00;
+                        double totalPrincipalInterest = 0.00;
+                        switch (fopName) {
+                            case "Monthly":
+                                installmentAmt = calculateMonthlyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateMonthlyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateMonthlyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            case "Quarterly":
+                                installmentAmt = calculateQuarterlyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateQuarterlyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateQuarterlyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            case "Semi-Annually":
+                                installmentAmt = calculateSemiAnnuallyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateSemiAnnuallyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateSemiAnnuallyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            case "Annually":
+                                installmentAmt = calculateAnnuallyInstallment(loanAmount, interestRate, duration);
+                                totalInterestAmt = calculateAnnuallyTotalInterest(loanAmount, interestRate, duration);
+                                totalPrincipalInterest = calculateAnnuallyTotalInterestAndPrincipal(loanAmount, interestRate, duration);
+                                break;
+                            default:
+                                break;
+                        }
+                        etInstallment.setText(getDecimalFormatter().format(installmentAmt));
+                        etTotInterest.setText(getDecimalFormatter().format(totalInterestAmt));
+                        etTotPrincialInterest.setText(getDecimalFormatter().format(totalPrincipalInterest));
+                    } else {
+                        etInstallment.setText("0.00");
+                    }
+                } catch (NumberFormatException e) {
+                    etInstallment.setText("0.00");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        // rate change listener
+        etInterestRate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    String fopName = fopTvAutoComplete.getText().toString();
+                    String loanAmountString = etLoanAmt.getText().toString();
+                    String interestRateString = etInterestRate.getText().toString();
+                    String durationString = etTerms.getText().toString();
+                    if (!TextUtils.isEmpty(fopName) && !TextUtils.isEmpty(loanAmountString) && !TextUtils.isEmpty(interestRateString) && !TextUtils.isEmpty(durationString)) {
+                        double loanAmount = Double.parseDouble(loanAmountString);
+                        double interestRate = Double.parseDouble(interestRateString);
+                        int duration = Integer.parseInt(durationString);
+                        double installmentAmt = 0.00;
+                        switch (fopName) {
+                            case "Monthly":
+                                installmentAmt = calculateMonthlyInstallment(loanAmount, interestRate, duration);
+                                break;
+                            case "Quarterly":
+                                installmentAmt = calculateQuarterlyInstallment(loanAmount, interestRate, duration);
+                                break;
+                            case "Semi-Annually":
+                                installmentAmt = calculateSemiAnnuallyInstallment(loanAmount, interestRate, duration);
+                                break;
+                            case "Annually":
+                                installmentAmt = calculateAnnuallyInstallment(loanAmount, interestRate, duration);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        etInstallment.setText(getDecimalFormatter().format(installmentAmt));
+                    }
+                } catch (NumberFormatException e) {
+                    etInstallment.setText("0.00");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void callAddLoan() {
@@ -130,6 +473,8 @@ public class LoanManagementActionActivity extends AppCompatActivity {
         loadFrequencies(fopTvAutoComplete);
         loadDatePickers(etStDate, etDueDate);
 
+        // disable installment edit text
+        etInstallment.setEnabled(false);
         btnFunction.setOnClickListener(v -> {
 
             // validate
@@ -170,6 +515,8 @@ public class LoanManagementActionActivity extends AppCompatActivity {
         tvHeadLine.setText("Edit Your Loan");
         tvSubHeadLine.setText("Modify your loan details below");
 
+        // disable installment edit text
+        etInstallment.setEnabled(false);
         // load data
         handleLoading(progressBar, overlay, true);
         DatabaseReference loanRef = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(authProfile.getCurrentUser().getUid()).child(loanKey);
@@ -190,6 +537,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
                                             // fill inputs
                                             fillInputFields(loan);
                                             loadLoanTypes(loanTypeTvAutoComplete);
+                                            loadFrequencies(fopTvAutoComplete);
                                             break;
                                         }
                                     }
@@ -225,7 +573,6 @@ public class LoanManagementActionActivity extends AppCompatActivity {
         }
 
         // run dropdowns
-        loadFrequencies(fopTvAutoComplete);
         loadDatePickers(etStDate, etDueDate);
 
         // update button
@@ -334,7 +681,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
         double loanAmtDbl = 0.00, rateDbl = 0.00, installmentDbl = 0.00, additionalChargesDbl = 0.00;
 
         loanTypeId = String.valueOf(loan.getLoanTypeId());
-        fop = loan.getFop();
+        fop = fopTvAutoComplete.getText().toString();
         loanAmt = etLoanAmt.getText().toString();
         rate = etInterestRate.getText().toString();
         installment = etInstallment.getText().toString();
@@ -374,6 +721,11 @@ public class LoanManagementActionActivity extends AppCompatActivity {
             etDueDate.setError("Due date cannot be empty");
             etDueDate.requestFocus();
             Toast.makeText(this, "Due date cannot be empty", Toast.LENGTH_SHORT).show();
+            isError = true;
+        } if (TextUtils.isEmpty(fop) || fop.equals("Not Selected")) {
+            fopTvAutoComplete.setError("Frequency of Payment cannot be empty");
+            fopTvAutoComplete.requestFocus();
+            Toast.makeText(this, "Frequency of Payment cannot be empty", Toast.LENGTH_SHORT).show();
             isError = true;
         } else if (TextUtils.isEmpty(lenderInfo)) {
             etDueDate.setError(null);
@@ -441,6 +793,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
 
             return validatedLoanItem;
         } else {
+            handleLoading(progressBar, overlay, false);
             return null;
         }
     }
@@ -507,13 +860,12 @@ public class LoanManagementActionActivity extends AppCompatActivity {
 
     private void loadDatePickers(EditText etStDate, EditText etDueDate) {
         setUpDatePicker(etStDate, this);
-        setUpDatePicker(etDueDate, this);
+        etDueDate.setEnabled(false);
+//        setUpDatePicker(etDueDate, this);
     }
 
     private void loadFrequencies(AutoCompleteTextView fopTvAutoComplete) {
         String[] fopItemList = {
-                "Weekly",
-                "Bi-Weekly",
                 "Monthly",
                 "Quarterly",
                 "Semi-Annually",
