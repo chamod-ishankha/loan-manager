@@ -7,6 +7,7 @@ import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LO
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +22,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.kaluwa.enterprises.loanmanager.MainActivity;
@@ -30,6 +33,8 @@ import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.adapters.RVLoanManagementAdapter;
 import com.kaluwa.enterprises.loanmanager.adapters.holders.RVLoanManagementViewHolder;
 import com.kaluwa.enterprises.loanmanager.models.Loan;
+
+import java.util.Objects;
 
 public class LoanManagementActivity extends AppCompatActivity {
 
@@ -70,6 +75,8 @@ public class LoanManagementActivity extends AppCompatActivity {
             // clickers
             onClickers();
         } catch (Exception e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            progressBar.setVisibility(View.GONE);
             Toast.makeText(this, "Something went wrong: "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -79,7 +86,11 @@ public class LoanManagementActivity extends AppCompatActivity {
         // Show progress bar
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(userId).orderByKey();
+        Query query = FirebaseDatabase.getInstance()
+                .getReference(LOAN_REFERENCE)
+                .child(userId)
+                .orderByChild("approved")
+                .equalTo(true);
         FirebaseRecyclerOptions<Loan> options = new FirebaseRecyclerOptions.Builder<Loan>()
                 .setQuery(query, Loan.class)
                 .build();

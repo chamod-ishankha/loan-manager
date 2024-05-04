@@ -63,7 +63,7 @@ public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoa
         this.authProfile = FirebaseAuth.getInstance();
     }
 
-    protected void onBindViewHolder(@NonNull RVLoanManagementViewHolder viewHolder, int position, @NonNull Loan loanItem) {
+    protected void onBindViewHolder(@NonNull RVLoanManagementViewHolder viewHolder, int position,@NonNull Loan loanItem) {
         try {
             // get loan type icon name
             DatabaseReference loanTypeRef = FirebaseDatabase.getInstance().getReference().child(LOAN_TYPE_REFERENCE);

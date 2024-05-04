@@ -24,6 +24,8 @@ public class Loan implements Serializable {
     private String description;
     private String lenderInfo;
     private String contactInfo;
+    private boolean approved = false;
+    private String status = "new";
 
     private String loanTypeIcon;
     private String loanTypeName;

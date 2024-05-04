@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.kaluwa.enterprises.loanmanager.R;
-import com.kaluwa.enterprises.loanmanager.activities.InstallmentManagementActivity;
 import com.kaluwa.enterprises.loanmanager.activities.LoanHistoryActivity;
 import com.kaluwa.enterprises.loanmanager.activities.LoanManagementActivity;
 import com.kaluwa.enterprises.loanmanager.activities.PayDayRemindersActivity;
@@ -43,9 +42,6 @@ public class RVDashboardAdapter extends FirebaseRecyclerAdapter<Dashboard, RVDas
             switch (item.getId()) {
                 case 1:
                     intent = new Intent(context, LoanManagementActivity.class);
-                    break;
-                case 2:
-                    intent = new Intent(context, InstallmentManagementActivity.class);
                     break;
                 case 3:
                     intent = new Intent(context, PendingLoansActivity.class);

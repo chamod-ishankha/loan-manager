@@ -131,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
                 etRegConfPassword.clearComposingText();
             } else {
                 textGender = rbRegGenderSelected.getText().toString();
-                String titile = textGender.equalsIgnoreCase("male") ? "Mr. " : "Mrs. ";
+                String titile = textGender.equalsIgnoreCase("male") ? "Mr. " : "Ms. ";
                 regProgressBar.setVisibility(View.VISIBLE);
                 registerUser(textFirstName, textLastName, textEmail, textMobile, textDob, textGender, textPassword, titile, regProgressBar);
             }
