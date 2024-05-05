@@ -41,6 +41,7 @@ import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.models.User;
 import com.kaluwa.enterprises.loanmanager.utils.CircleTransform;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -140,8 +141,26 @@ public class UserProfileActivity extends AppCompatActivity {
         ivDp.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(this, ivDp);
             popupMenu.inflate(R.menu.option_on_dp);
-            if (firebaseUser.getPhotoUrl() == null) {
-                popupMenu.getMenu().getItem(R.id.remove_dp).setEnabled(false);
+            if (firebaseUser.getPhotoUrl() != null) {
+                Picasso.get().load(firebaseUser.getPhotoUrl()).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP)
+                        .placeholder(R.drawable.dp_loaing_sketch) // Use default image as a placeholder
+                        .error(R.drawable.dp_loaing_sketch)
+                        .into(ivDp, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        // Image loaded successfully
+                        // Do something here
+                        System.out.println("success");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Error occurred while loading image
+                        // Do something here, like loading a default image
+                        System.out.println("error");
+                        popupMenu.getMenu().findItem(R.id.remove_dp).setEnabled(false);
+                    }
+                });
             }
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.change_dp) {
@@ -267,15 +286,6 @@ public class UserProfileActivity extends AppCompatActivity {
                             .placeholder(R.drawable.dp_loaing_sketch) // Use default image as a placeholder
                             .error(R.drawable.dp_loaing_sketch) // Use default image if an error occurs
                             .into(ivDp);
-
-
-//                    Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.dp_loaing_sketch);
-//                    Picasso.get().load(uri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP).into(ivDp);
-//                    // Set User Dp (After user has uploaded)
-//                    uri = firebaseUser.getPhotoUrl();
-//
-//                    // ImageViewer setImageURI() should not be used with regular URIs. So we are using Picasso.
-//                    Picasso.get().load(uri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP).into(ivDp);
                 }
                 progressBar.setVisibility(View.GONE);
             }
