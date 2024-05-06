@@ -1,5 +1,8 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.USER_TYPE;
+import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.USER_REFERENCE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +28,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kaluwa.enterprises.loanmanager.R;
+import com.kaluwa.enterprises.loanmanager.models.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -115,12 +123,27 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Check if email is verified before user can access their profile
                 if (firebaseUser.isEmailVerified()) {
-                    Toast.makeText(this, "Logged in successful.", Toast.LENGTH_LONG).show();
-                    // Open Dashboard
-                    Intent intent = new Intent(this, DashboardActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                    FirebaseDatabase.getInstance().getReference(USER_REFERENCE).child(firebaseUser.getUid())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    User user = snapshot.getValue(User.class);
+                                    Toast.makeText(LoginActivity.this, "Logged in successful.", Toast.LENGTH_LONG).show();
+                                    // Open Dashboard
+                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                    // here handle to load which data
+                                    intent.putExtra(USER_TYPE, user.getUserType());
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.e(TAG, error.getMessage());
+                                    Toast.makeText(LoginActivity.this, "Something went wrong, Please register again.", Toast.LENGTH_LONG).show();
+                                }
+                            });
                 } else {
                     firebaseUser.sendEmailVerification();
                     authProfile.signOut(); // Sign out user

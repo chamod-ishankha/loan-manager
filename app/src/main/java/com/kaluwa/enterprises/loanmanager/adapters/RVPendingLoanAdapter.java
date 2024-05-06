@@ -12,58 +12,48 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.activities.LoanManagementActionActivity;
+import com.kaluwa.enterprises.loanmanager.activities.PendingLoansActivity;
 import com.kaluwa.enterprises.loanmanager.adapters.holders.RVLoanManagementViewHolder;
 import com.kaluwa.enterprises.loanmanager.models.Loan;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoanManagementViewHolder> {
+public class RVPendingLoanAdapter extends FirebaseRecyclerAdapter<Loan, RVLoanManagementViewHolder> {
 
-    private final static String TAG = "RVLoanManagementAdapter";
-    private Context context;
+    private final static String TAG = "RVPendingLoanAdapter";
     private ProgressBar progressBar;
+    private Context context;
     private FirebaseAuth authProfile;
 
-    public RVLoanManagementAdapter(FirebaseRecyclerOptions<Loan> options, ProgressBar progressBar, Context context) {
+    public RVPendingLoanAdapter(FirebaseRecyclerOptions<Loan> options, ProgressBar progressBar, Context context) {
         super(options);
-        this.context = context;
         this.progressBar = progressBar;
+        this.context = context;
         this.authProfile = FirebaseAuth.getInstance();
     }
 
-    protected void onBindViewHolder(@NonNull RVLoanManagementViewHolder viewHolder, int position,@NonNull Loan loanItem) {
+    @Override
+    protected void onBindViewHolder(@NonNull RVLoanManagementViewHolder viewHolder, int position, @NonNull Loan loanItem) {
         try {
             // get loan type icon name
             DatabaseReference loanTypeRef = FirebaseDatabase.getInstance().getReference().child(LOAN_TYPE_REFERENCE);
@@ -105,7 +95,7 @@ public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoa
         }
     }
 
-    private void updateViews(@NonNull RVLoanManagementViewHolder viewHolder, @NonNull Loan loanItem) {
+    private void updateViews(RVLoanManagementViewHolder viewHolder, Loan loanItem) {
         // Set loan type name and icon
         viewHolder.tvLoanTypeValue.setText(loanItem.getLoanTypeName());
 
@@ -120,11 +110,6 @@ public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoa
         viewHolder.cvLoanItemCard.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, viewHolder.cvLoanItemCard);
             popupMenu.inflate(R.menu.option_lm_item_menu);
-            // make can't remove after loan is approved.
-            popupMenu.getMenu().findItem(R.id.lm_menu_remove).setVisible(false);
-            // make can't redit after loan is approved.
-            popupMenu.getMenu().findItem(R.id.lm_menu_edit).setVisible(false);
-            // setup item onclick listener
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.lm_menu_view) {
                     Intent intent = new Intent(context, LoanManagementActionActivity.class);
@@ -175,7 +160,6 @@ public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoa
             popupMenu.show();
         });
     }
-
 
     @NonNull
     @Override

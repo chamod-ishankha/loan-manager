@@ -43,13 +43,13 @@ public class RVDashboardAdapter extends FirebaseRecyclerAdapter<Dashboard, RVDas
                 case 1:
                     intent = new Intent(context, LoanManagementActivity.class);
                     break;
-                case 3:
+                case 2:
                     intent = new Intent(context, PendingLoansActivity.class);
                     break;
-                case 4:
+                case 3:
                     intent = new Intent(context, LoanHistoryActivity.class);
                     break;
-                case 5:
+                case 4:
                     intent = new Intent(context, PayDayRemindersActivity.class);
                     break;
                 default:

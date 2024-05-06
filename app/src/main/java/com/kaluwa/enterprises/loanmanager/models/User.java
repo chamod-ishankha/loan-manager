@@ -18,5 +18,6 @@ public class User implements Serializable {
     private String Dob;
     private String Gender;
     private String title;
+    private String userType;
 
 }

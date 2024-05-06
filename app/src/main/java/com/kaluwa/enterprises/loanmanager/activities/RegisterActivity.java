@@ -1,6 +1,7 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.USER_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.constants.UserTypes.NORMAL_USER;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.setUpDatePicker;
 
 import androidx.annotation.NonNull;
@@ -131,9 +132,9 @@ public class RegisterActivity extends AppCompatActivity {
                 etRegConfPassword.clearComposingText();
             } else {
                 textGender = rbRegGenderSelected.getText().toString();
-                String titile = textGender.equalsIgnoreCase("male") ? "Mr. " : "Ms. ";
+                String title = textGender.equalsIgnoreCase("male") ? "Mr. " : "Ms. ";
                 regProgressBar.setVisibility(View.VISIBLE);
-                registerUser(textFirstName, textLastName, textEmail, textMobile, textDob, textGender, textPassword, titile, regProgressBar);
+                registerUser(textFirstName, textLastName, textEmail, textMobile, textDob, textGender, textPassword, title, regProgressBar);
             }
 
         });
@@ -141,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @SuppressLint("LongLogTag")
-    private void registerUser(String textFirstName, String textLastName, String textEmail, String textMobile, String textDob, String textGender, String textPassword, String titile, ProgressBar progressBar) {
+    private void registerUser(String textFirstName, String textLastName, String textEmail, String textMobile, String textDob, String textGender, String textPassword, String title, ProgressBar progressBar) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         // create a user profile
         auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(this, task -> {
@@ -153,7 +154,7 @@ public class RegisterActivity extends AppCompatActivity {
                 firebaseUser.updateProfile(profileChangeRequest);
 
                 // Save User Data into the firebase Realtime Database.
-                User user = new User(textFirstName, textLastName, textEmail, textMobile, textDob, textGender, titile);
+                User user = new User(textFirstName, textLastName, textEmail, textMobile, textDob, textGender, title, NORMAL_USER);
 
                 // Extracting user reference from database for "Registered Users"
                 DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference(USER_REFERENCE);
@@ -162,10 +163,10 @@ public class RegisterActivity extends AppCompatActivity {
                     if (detailsTask.isSuccessful()) {
                         // success
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(this, "User registered successfully. Please verify your email address and Login to the Loan Manager.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "User registered successfully. Please use Login screen to Login to the Loan Manager.", Toast.LENGTH_LONG).show();
 
                         // send verification email
-                        firebaseUser.sendEmailVerification();
+//                        firebaseUser.sendEmailVerification();
 
                         // signout
                         auth.signOut();

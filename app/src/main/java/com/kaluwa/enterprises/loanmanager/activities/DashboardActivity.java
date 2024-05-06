@@ -1,6 +1,9 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.USER_TYPE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.DASHBOARD_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.constants.UserTypes.ADMIN_USER;
+import static com.kaluwa.enterprises.loanmanager.constants.UserTypes.NORMAL_USER;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.applyColorToBackground;
 
 import android.content.Intent;
@@ -51,7 +54,6 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         authProfile = FirebaseAuth.getInstance();
-
         // set title
         getSupportActionBar().setTitle("Dashboard");
         swipeToRefresh();
@@ -63,8 +65,10 @@ public class DashboardActivity extends AppCompatActivity {
         LinearLayoutManager llManager = new LinearLayoutManager(this);
         dbRecycler.setLayoutManager(llManager);
 
+        // handle loading data by user types
+        Bundle extras = getIntent().getExtras();
         try {
-            rvDBAdapter = loadData();
+            rvDBAdapter = loadData(extras);
             // set adapter to recycler view
             dbRecycler.setAdapter(rvDBAdapter);
         } catch (Exception e) {
@@ -73,11 +77,20 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    private FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> loadData() {
+    private FirebaseRecyclerAdapter<Dashboard, RVDashboardViewHolder> loadData(Bundle extras) {
         // Show progress bar
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByKey();
+        Query query = null;
+        if (extras.getString(USER_TYPE).equals(ADMIN_USER)) {
+            // load admin dashboard values
+            query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByChild("userType").equalTo(ADMIN_USER);
+        } else if (extras.getString(USER_TYPE).equals(NORMAL_USER)) {
+            // load user dashboard values
+            query = FirebaseDatabase.getInstance().getReference(DASHBOARD_REFERENCE).orderByChild("userType").equalTo(NORMAL_USER);
+        } // do nothing
+
+
         FirebaseRecyclerOptions<Dashboard> options = new FirebaseRecyclerOptions.Builder<Dashboard>()
                 .setQuery(query, Dashboard.class)
                 .build();

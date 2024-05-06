@@ -45,9 +45,6 @@ public class LoanManagementActivity extends AppCompatActivity {
     // buttons
     private FloatingActionButton fabAdd;
 
-    // items
-    private String key = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
