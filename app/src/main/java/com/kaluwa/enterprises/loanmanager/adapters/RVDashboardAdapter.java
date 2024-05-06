@@ -5,6 +5,7 @@ import static com.kaluwa.enterprises.loanmanager.utils.Utils.applyColorToBackgro
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,33 +37,28 @@ public class RVDashboardAdapter extends FirebaseRecyclerAdapter<Dashboard, RVDas
 
     @Override
     protected void onBindViewHolder(@NonNull RVDashboardViewHolder holder, int position, @NonNull Dashboard item) {
-        // Define onClickListener for each card
-        holder.itemCardView.setOnClickListener(v -> {
-            Intent intent;
-            switch (item.getId()) {
-                case 1:
-                    intent = new Intent(context, LoanManagementActivity.class);
-                    break;
-                case 2:
-                    intent = new Intent(context, PendingLoansActivity.class);
-                    break;
-                case 3:
-                    intent = new Intent(context, LoanHistoryActivity.class);
-                    break;
-                case 4:
-                    intent = new Intent(context, PayDayRemindersActivity.class);
-                    break;
-                default:
-                    intent = null;
-                    break;
-            }
-            if (intent != null) {
-                context.startActivity(intent);
-            }
-        });
-
         // set color codes to background of card, title, subtitle
         try {
+            // Define onClickListener for each card dynamically
+            holder.itemCardView.setOnClickListener(v -> {
+                Intent intent;
+                if (item.getClassName() != null && !TextUtils.isEmpty(item.getClassName())) {
+                    try {
+                        // find class
+                        Class<?> clazz = Class.forName(item.getClassName());
+                        // set to intent
+                        intent = new Intent(context, clazz);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    intent = null;
+                }
+                if (intent != null) {
+                    context.startActivity(intent);
+                }
+            });
+
             // set content to card
             holder.tvTitle.setText(item.getTitle());
             holder.tvSubtitle.setText(item.getSubTitle());

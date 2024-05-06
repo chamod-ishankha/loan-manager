@@ -17,4 +17,5 @@ public class Dashboard implements Serializable {
     private String bcCode; // background color code
     private String tcCode; // title color code
     private String stcCode; // sub title color code
+    private String className;
 }
