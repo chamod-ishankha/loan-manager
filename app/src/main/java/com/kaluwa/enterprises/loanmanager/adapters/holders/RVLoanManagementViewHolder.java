@@ -14,7 +14,7 @@ public class RVLoanManagementViewHolder extends RecyclerView.ViewHolder {
 
     public TextView tvLoanIdValue, tvLoanAmountValue, tvLoanTermValue, tvLoanTypeValue;
     public ImageView ivLoanTypeIcon;
-    public CardView cvLoan;
+    public CardView cvLoanItemCard;
 
     public RVLoanManagementViewHolder(@NonNull View view) {
         super(view);
@@ -23,6 +23,6 @@ public class RVLoanManagementViewHolder extends RecyclerView.ViewHolder {
         tvLoanTermValue = view.findViewById(R.id.loan_rv_item_terms_d_text_view);
         tvLoanTypeValue = view.findViewById(R.id.loan_rv_item_loan_type_d_text_view);
         ivLoanTypeIcon = view.findViewById(R.id.loan_rv_item_image_view);
-        cvLoan = view.findViewById(R.id.loan_rv_item_card_view);
+        cvLoanItemCard = view.findViewById(R.id.loan_rv_item_card_view);
     }
 }

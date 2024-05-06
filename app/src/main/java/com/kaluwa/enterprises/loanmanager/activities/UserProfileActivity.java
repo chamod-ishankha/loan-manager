@@ -3,6 +3,7 @@ package com.kaluwa.enterprises.loanmanager.activities;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.USER_REFERENCE;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -33,10 +35,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kaluwa.enterprises.loanmanager.MainActivity;
 import com.kaluwa.enterprises.loanmanager.R;
 import com.kaluwa.enterprises.loanmanager.models.User;
 import com.kaluwa.enterprises.loanmanager.utils.CircleTransform;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -54,6 +59,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
     private User user = new User();
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,8 +139,77 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // set onclick listener for profile picture
         ivDp.setOnClickListener(v -> {
-            Intent intent = new Intent(this, UploadProfilePictureActivity.class);
-            startActivity(intent);
+            PopupMenu popupMenu = new PopupMenu(this, ivDp);
+            popupMenu.inflate(R.menu.option_on_dp);
+            if (firebaseUser.getPhotoUrl() != null) {
+                Picasso.get().load(firebaseUser.getPhotoUrl()).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP)
+                        .placeholder(R.drawable.dp_loaing_sketch) // Use default image as a placeholder
+                        .error(R.drawable.dp_loaing_sketch)
+                        .into(ivDp, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        // Image loaded successfully
+                        // Do something here
+                        System.out.println("success");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Error occurred while loading image
+                        // Do something here, like loading a default image
+                        System.out.println("error");
+                        popupMenu.getMenu().findItem(R.id.remove_dp).setEnabled(false);
+                    }
+                });
+            }
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.change_dp) {
+                    Intent intent = new Intent(this, UploadProfilePictureActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    AlertDialog.Builder removeDpDialog = new AlertDialog.Builder(this);
+                    removeDpDialog.setTitle("Remove Profile Picture");
+                    removeDpDialog.setMessage("Do you want to remove your profile picture? This action can't be undo.");
+                    removeDpDialog.setPositiveButton("Remove", (dialog, which) -> {
+                        progressBar.setVisibility(View.VISIBLE);
+                        // Delete Profile Picture
+                        if (firebaseUser.getPhotoUrl() != null) {
+                            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                            StorageReference storageReference = firebaseStorage.getReferenceFromUrl(firebaseUser.getPhotoUrl().toString());
+                            storageReference.delete().addOnSuccessListener(unused -> {
+                                progressBar.setVisibility(View.GONE);
+                                Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.dp_loaing_sketch);
+                                Picasso.get().load(uri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP)
+                                        .placeholder(R.drawable.dp_loaing_sketch) // Use default image as a placeholder
+                                        .error(R.drawable.dp_loaing_sketch) // Use default image if an error occurs
+                                        .into(ivDp);
+                                Log.d(TAG, "OnSuccess: "+firebaseUser.getUid()+" user's photo deleted.");
+                            }).addOnFailureListener(e -> {
+                                progressBar.setVisibility(View.GONE);
+                                Log.d(TAG, "OnFailure: "+e.getMessage());
+                                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+
+                    removeDpDialog.setNegativeButton("Cancel", (dialog, which) -> {
+                        dialog.cancel();
+                    });
+                    // Create the Alert dialog
+                    AlertDialog alertDialog = removeDpDialog.create();
+                    // Change the continue button color
+                    alertDialog.setOnShowListener(dialog -> {
+                        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
+                    });
+                    // Show the Alert Dialog box
+                    alertDialog.show();
+                }
+                return false;
+            });
+            popupMenu.show();
         });
     }
 
@@ -205,12 +280,12 @@ public class UserProfileActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Set User Dp (After user has uploaded)
-                    Uri uri = firebaseUser.getPhotoUrl();
-
-                    // ImageViewer setImageURI() should not be used with regular URIs. So we are using Picasso.
-//                    Picasso.get().load(uri).fit().centerCrop(Gravity.TOP).into(ivDp);
-                    Picasso.get().load(uri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP).into(ivDp);
+                    // Load user image from Firebase
+                    Uri userImageUri = firebaseUser.getPhotoUrl();
+                    Picasso.get().load(userImageUri).fit().transform(new CircleTransform()).centerCrop(Gravity.TOP)
+                            .placeholder(R.drawable.dp_loaing_sketch) // Use default image as a placeholder
+                            .error(R.drawable.dp_loaing_sketch) // Use default image if an error occurs
+                            .into(ivDp);
                 }
                 progressBar.setVisibility(View.GONE);
             }

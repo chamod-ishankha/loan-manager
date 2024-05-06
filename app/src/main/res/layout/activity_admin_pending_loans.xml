@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.InstallmentManagementActivity"
+    tools:context=".activities.AdminPendingLoansActivity"
     android:background="@color/main"
     android:id="@+id/swipeContainer">
 
@@ -14,13 +14,13 @@
         android:padding="15dp">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/im_rv"
+            android:id="@+id/admin_pl_rv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/transparent"/>
 
         <ProgressBar
-            android:id="@+id/im_progressBar"
+            android:id="@+id/admin_pl_progressBar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

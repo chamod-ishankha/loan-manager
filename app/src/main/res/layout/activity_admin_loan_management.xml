@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.LoanManagementActivity"
+    tools:context=".activities.AdminLoanManagementActivity"
     android:background="@color/main"
     android:id="@+id/swipeContainer">
 
@@ -14,13 +14,13 @@
         android:padding="15dp">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lm_rv"
+            android:id="@+id/admin_lm_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/transparent"/>
 
         <ProgressBar
-            android:id="@+id/lm_progressBar"
+            android:id="@+id/admin_lm_progressBar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,20 +28,6 @@
             android:visibility="gone"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
-
-        <!-- Plus Button (FAB) -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/lm_fab_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_add_48"
-            app:backgroundTint="@color/green"
-            app:fabSize="auto"
-            app:maxImageSize="36dp"
-            app:tint="@android:color/white"/>
 
     </RelativeLayout>
 
