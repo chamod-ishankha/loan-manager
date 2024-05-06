@@ -131,8 +131,6 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this, "Logged in successful.", Toast.LENGTH_LONG).show();
                                     // Open Dashboard
                                     Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                                    // here handle to load which data
-                                    intent.putExtra(USER_TYPE, user.getUserType());
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     finish();

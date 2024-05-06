@@ -19,5 +19,6 @@ public class User implements Serializable {
     private String Gender;
     private String title;
     private String userType;
+    private String uid;
 
 }
