@@ -48,6 +48,9 @@ public class RVDashboardAdapter extends FirebaseRecyclerAdapter<Dashboard, RVDas
                         Class<?> clazz = Class.forName(item.getClassName());
                         // set to intent
                         intent = new Intent(context, clazz);
+                        if (item.getAction() != null && !TextUtils.isEmpty(item.getAction())) {
+                            intent.putExtra("action", item.getAction());
+                        }
                     } catch (ClassNotFoundException e) {
                         throw new RuntimeException(e);
                     }

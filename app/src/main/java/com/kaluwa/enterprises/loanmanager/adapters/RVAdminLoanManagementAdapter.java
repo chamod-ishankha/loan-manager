@@ -2,6 +2,8 @@ package com.kaluwa.enterprises.loanmanager.adapters;
 
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.PENDING_ACTIVITY;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.constants.StatusConstant.STATUS_NEW;
+import static com.kaluwa.enterprises.loanmanager.constants.StatusConstant.STATUS_REJECTED;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -33,10 +36,12 @@ public class RVAdminLoanManagementAdapter extends FirebaseRecyclerAdapter<User, 
     private static final String TAG = "RVAdminLoanManagementAdapter";
     private Context context;
     private ProgressBar progressBar;
-    public RVAdminLoanManagementAdapter(ProgressBar progressBar, FirebaseRecyclerOptions<User> options, Context context) {
+    private String action;
+    public RVAdminLoanManagementAdapter(ProgressBar progressBar, FirebaseRecyclerOptions<User> options, String action, Context context) {
         super(options);
         this.context = context;
         this.progressBar = progressBar;
+        this.action = action;
     }
 
     @Override
@@ -51,10 +56,14 @@ public class RVAdminLoanManagementAdapter extends FirebaseRecyclerAdapter<User, 
             holder.rejectedCount.setText(String.valueOf(count.getRejected()));
 
             holder.cardView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, AdminPendingLoansActivity.class);
-                String[] data = {user.getUid(), PENDING_ACTIVITY};
-                intent.putExtra("Object", data);
-                context.startActivity(intent);
+                if (action != null) {
+                    Intent intent = new Intent(context, AdminPendingLoansActivity.class);
+                    String[] data = {user.getUid(), action};
+                    intent.putExtra("Object", data);
+                    context.startActivity(intent);
+                } else {
+                    Toast.makeText(context, "No action!", Toast.LENGTH_SHORT).show();
+                }
             });
         });
     }
@@ -76,13 +85,13 @@ public class RVAdminLoanManagementAdapter extends FirebaseRecyclerAdapter<User, 
                 }
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                     Loan loan = childSnapshot.getValue(Loan.class);
-                    if (loan != null && !loan.isApproved() && loan.getStatus().equals("new")) {
+                    if (loan != null && !loan.isApproved() && loan.getStatus().equals(STATUS_NEW)) {
                         pendingCount++;
                     }
                 }
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                     Loan loan = childSnapshot.getValue(Loan.class);
-                    if (loan != null && !loan.isApproved() && loan.getStatus().equals("reject")) {
+                    if (loan != null && !loan.isApproved() && loan.getStatus().equals(STATUS_REJECTED)) {
                         rejectCount++;
                     }
                 }

@@ -2,6 +2,7 @@ package com.kaluwa.enterprises.loanmanager.activities;
 
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.ADD_ACTION;
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.EDIT_ACTION;
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.USER_ID_KEY;
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.VIEW_ACTION;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
@@ -74,6 +75,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
     private Button btnFunction;
     private ProgressBar progressBar;
     private View overlay;
+    private String userId = null;
 
     @SuppressLint("LongLogTag")
     @Override
@@ -113,6 +115,9 @@ public class LoanManagementActionActivity extends AppCompatActivity {
         try {
             // handle intent view
             String loanKey = (String) getIntent().getSerializableExtra(VIEW_ACTION);
+            if (getIntent().getSerializableExtra(USER_ID_KEY) != null) {
+                userId = (String) getIntent().getSerializableExtra(USER_ID_KEY);
+            }
             if (loanKey != null) {
                 callOnChangeListeners();
                 callViewLoan(loanKey);
@@ -519,7 +524,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
         etInstallment.setEnabled(false);
         // load data
         handleLoading(progressBar, overlay, true);
-        DatabaseReference loanRef = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(authProfile.getCurrentUser().getUid()).child(loanKey);
+        DatabaseReference loanRef = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(userId == null ? authProfile.getCurrentUser().getUid() : userId).child(loanKey);
         try {
             loanRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -587,7 +592,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
                 // Loan reference
                 DatabaseReference loanReference = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE);
                 // generate unique key for each loan
-                String userId = authProfile.getCurrentUser().getUid();
+                String userId = (this.userId == null ? authProfile.getCurrentUser().getUid() : this.userId);
                 loanReference.child(userId).child(loanKey).setValue(validateLoanItem)
                         .addOnSuccessListener(unused -> {
                             handleLoading(progressBar, overlay, false);
@@ -605,7 +610,7 @@ public class LoanManagementActionActivity extends AppCompatActivity {
     private void callViewLoan(String loanKey) {
         handleLoading(progressBar, overlay, true);
         // load data
-        DatabaseReference loanRef = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(authProfile.getCurrentUser().getUid()).child(loanKey);
+        DatabaseReference loanRef = FirebaseDatabase.getInstance().getReference(LOAN_REFERENCE).child(userId == null ? authProfile.getCurrentUser().getUid() : userId).child(loanKey);
         try {
             loanRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

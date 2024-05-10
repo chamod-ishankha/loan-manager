@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kaluwa.enterprises.loanmanager.R;
 
-public class RVLoanManagementViewHolder extends RecyclerView.ViewHolder {
+public class RVAdminPendingLoanViewHolder extends RecyclerView.ViewHolder {
 
     public TextView tvLoanIdValue, tvLoanAmountValue, tvLoanTermValue, tvLoanTypeValue, tvLoanStatus;
     public ImageView ivLoanTypeIcon;
     public CardView cvLoanItemCard;
 
-    public RVLoanManagementViewHolder(@NonNull View view) {
+    public RVAdminPendingLoanViewHolder(@NonNull View view) {
         super(view);
         tvLoanIdValue = view.findViewById(R.id.loan_rv_item_id_d_text_view);
         tvLoanAmountValue = view.findViewById(R.id.loan_rv_item_amount_d_text_view);

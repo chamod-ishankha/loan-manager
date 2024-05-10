@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/lm_menu_view"
+        android:title="View"/>
+
+    <item
+        android:id="@+id/lm_menu_edit"
+        android:title="Edit"/>
+
+    <item
+        android:id="@+id/lm_menu_approve"
+        android:title="Approve"/>
+
+    <item
+        android:id="@+id/lm_menu_reject"
+        android:title="Reject"/>
+
+    <item
+        android:id="@+id/lm_menu_remove"
+        android:title="Remove"/>
+</menu>

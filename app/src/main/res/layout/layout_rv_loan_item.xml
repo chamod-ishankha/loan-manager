@@ -10,129 +10,147 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Left Section: Loan Details -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/loan_rv_status_text_view"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:text="Rejected"
+            android:textSize="8sp"
+            android:textColor="@color/red"
+            android:textStyle="bold"
+            android:layout_gravity="right"
+            android:paddingBottom="4dp"
+            android:visibility="gone"/>
 
-            <!-- left section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Left Section: Loan Details -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.6"
-                android:orientation="vertical">
-
-                <!-- Loan Id -->
-                <TextView
-                    android:id="@+id/loan_rv_item_id_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Loan ID"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"/>
-
-                <!-- Loan Amount -->
-                <TextView
-                    android:id="@+id/loan_rv_item_amount_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Amount"
-                    android:textSize="14sp"
-                    android:textColor="#616161"/>
-
-                <!-- Loan Terms -->
-                <TextView
-                    android:id="@+id/loan_rv_item_terms_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Terms"
-                    android:textSize="14sp"
-                    android:textColor="#616161"/>
-
-                <!-- Description -->
-                <TextView
-                    android:id="@+id/loan_rv_item_description_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Type"
-                    android:textSize="14sp"
-                    android:textColor="#616161"/>
-
-            </LinearLayout>
-
-            <!-- middle line-->
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:background="@color/black"/>
-
-            <!-- right section-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical">
-                <!-- Loan Id -->
-                <TextView
-                    android:id="@+id/loan_rv_item_id_d_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="id"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#3b3c3d"/>
+                android:orientation="horizontal"
+                android:layout_gravity="center">
 
-                <!-- Loan Amount -->
-                <TextView
-                    android:id="@+id/loan_rv_item_amount_d_text_view"
-                    android:layout_width="wrap_content"
+                <!-- left section-->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="amount"
-                    android:textSize="14sp"
-                    android:textColor="#3b3c3d"/>
+                    android:layout_weight="1.6"
+                    android:orientation="vertical">
 
-                <!-- Loan Terms -->
-                <TextView
-                    android:id="@+id/loan_rv_item_terms_d_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="duration in month"
-                    android:textSize="14sp"
-                    android:textColor="#3b3c3d"/>
+                    <!-- Loan Id -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_id_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loan ID"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"/>
 
-                <!-- Description -->
-                <TextView
-                    android:id="@+id/loan_rv_item_loan_type_d_text_view"
-                    android:layout_width="wrap_content"
+                    <!-- Loan Amount -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_amount_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Amount"
+                        android:textSize="14sp"
+                        android:textColor="#616161"/>
+
+                    <!-- Loan Terms -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_terms_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Terms"
+                        android:textSize="14sp"
+                        android:textColor="#616161"/>
+
+                    <!-- Description -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_description_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Type"
+                        android:textSize="14sp"
+                        android:textColor="#616161"/>
+
+                </LinearLayout>
+
+                <!-- middle line-->
+                <View
+                    android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:text="loan type"
-                    android:textSize="14sp"
-                    android:textColor="#3b3c3d"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:ellipsize="end"/>
+                    android:layout_marginRight="5dp"
+                    android:background="@color/black"/>
+
+                <!-- right section-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <!-- Loan Id -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_id_d_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="id"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#3b3c3d"/>
+
+                    <!-- Loan Amount -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_amount_d_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="amount"
+                        android:textSize="14sp"
+                        android:textColor="#3b3c3d"/>
+
+                    <!-- Loan Terms -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_terms_d_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="duration in month"
+                        android:textSize="14sp"
+                        android:textColor="#3b3c3d"/>
+
+                    <!-- Description -->
+                    <TextView
+                        android:id="@+id/loan_rv_item_loan_type_d_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="loan type"
+                        android:textSize="14sp"
+                        android:textColor="#3b3c3d"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:ellipsize="end"/>
+
+                </LinearLayout>
 
             </LinearLayout>
+
+            <!-- Right Section: Loan Image -->
+            <ImageView
+                android:id="@+id/loan_rv_item_image_view"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/icon_unavailable"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center" />
 
         </LinearLayout>
-
-        <!-- Right Section: Loan Image -->
-        <ImageView
-            android:id="@+id/loan_rv_item_image_view"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/icon_unavailable"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center" />
-
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

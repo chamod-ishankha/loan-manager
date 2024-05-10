@@ -4,6 +4,8 @@ import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.
 import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.VIEW_ACTION;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.LOAN_TYPE_REFERENCE;
+import static com.kaluwa.enterprises.loanmanager.constants.StatusConstant.STATUS_APPROVED;
+import static com.kaluwa.enterprises.loanmanager.constants.StatusConstant.STATUS_REJECTED;
 import static com.kaluwa.enterprises.loanmanager.utils.Utils.getDecimalFormatter;
 
 import android.app.AlertDialog;
@@ -100,6 +102,19 @@ public class RVLoanManagementAdapter extends FirebaseRecyclerAdapter<Loan, RVLoa
             viewHolder.tvLoanIdValue.setText(loanId);
             viewHolder.tvLoanAmountValue.setText("Rs. " + df.format(loanItem.getLoanAmount()));
             viewHolder.tvLoanTermValue.setText(String.valueOf(loanItem.getTerms()));
+            if (loanItem.getStatus().equals(STATUS_APPROVED)) {
+                viewHolder.tvLoanStatus.setText("APPROVED");
+                viewHolder.tvLoanStatus.setTextColor(context.getResources().getColor(R.color.green));
+                viewHolder.tvLoanStatus.setVisibility(View.VISIBLE);
+            } else if (loanItem.getStatus().equals(STATUS_REJECTED)) {
+                viewHolder.tvLoanStatus.setText("REJECTED");
+                viewHolder.tvLoanStatus.setTextColor(context.getResources().getColor(R.color.red));
+                viewHolder.tvLoanStatus.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.tvLoanStatus.setText("NEW");
+                viewHolder.tvLoanStatus.setTextColor(context.getResources().getColor(R.color.royalBlue));
+                viewHolder.tvLoanStatus.setVisibility(View.VISIBLE);
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error: " + e.getMessage());
         }

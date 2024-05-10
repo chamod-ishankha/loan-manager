@@ -1,11 +1,14 @@
 package com.kaluwa.enterprises.loanmanager.activities;
 
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.APPROVE_ACTIVITY;
+import static com.kaluwa.enterprises.loanmanager.constants.ActivityRequestCodes.PENDING_ACTIVITY;
 import static com.kaluwa.enterprises.loanmanager.constants.DatabaseReferences.USER_REFERENCE;
 import static com.kaluwa.enterprises.loanmanager.constants.UserTypes.NORMAL_USER;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +47,7 @@ public class AdminLoanManagementActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
     private ProgressBar progressBar;
     private FirebaseRecyclerAdapter<User, RVAdminLoanManagementViewHolder> adapter;
+    private String action;
 
     @SuppressLint("LongLogTag")
     @Override
@@ -52,6 +56,15 @@ public class AdminLoanManagementActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_loan_management);
 
         authProfile = FirebaseAuth.getInstance();
+
+        // get action bundle
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String data = bundle.getString("action");
+            if (data != null && !TextUtils.isEmpty(data)) {
+                action = data;
+            }
+        }
 
         // set title
         getSupportActionBar().setTitle("Loan Management");
@@ -78,7 +91,7 @@ public class AdminLoanManagementActivity extends AppCompatActivity {
                             }
                         })
                         .build();
-                adapter = new RVAdminLoanManagementAdapter(progressBar, options, AdminLoanManagementActivity.this);
+                adapter = new RVAdminLoanManagementAdapter(progressBar, options, action, AdminLoanManagementActivity.this);
                 adapter.startListening();
                 recyclerView.setAdapter(adapter);
             });
